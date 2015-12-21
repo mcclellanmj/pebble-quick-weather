@@ -1,6 +1,8 @@
 #include <pebble.h>
 #include "scrolling_forecast_layer.h"
 
+// TODO: Create a layer with 32 pixel height of the weather for a single day
+
 typedef struct {
   Window *main_window;
   ScrollingForecastLayer* forecast_layer;

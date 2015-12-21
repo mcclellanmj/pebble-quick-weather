@@ -9,14 +9,139 @@
     "longName": "instant-forecast",
     "projectType": "native",
     "resources": {
-        "media": []
+        "media": [
+            {
+                "file": "images/9.png",
+                "name": "WEATHER_ICON_9",
+                "type": "png"
+            },
+            {
+                "file": "images/8.png",
+                "name": "WEATHER_ICON_8",
+                "type": "png"
+            },
+            {
+                "file": "images/7.png",
+                "name": "WEATHER_ICON_7",
+                "type": "png"
+            },
+            {
+                "file": "images/6.png",
+                "name": "WEATHER_ICON_6",
+                "type": "png"
+            },
+            {
+                "file": "images/5.png",
+                "name": "WEATHER_ICON_5",
+                "type": "png"
+            },
+            {
+                "file": "images/4.png",
+                "name": "WEATHER_ICON_4",
+                "type": "png"
+            },
+            {
+                "file": "images/3.png",
+                "name": "WEATHER_ICON_3",
+                "type": "png"
+            },
+            {
+                "file": "images/24.png",
+                "name": "WEATHER_ICON_24",
+                "type": "png"
+            },
+            {
+                "file": "images/23.png",
+                "name": "WEATHER_ICON_23",
+                "type": "png"
+            },
+            {
+                "file": "images/22.png",
+                "name": "WEATHER_ICON_22",
+                "type": "png"
+            },
+            {
+                "file": "images/21.png",
+                "name": "WEATHER_ICON_21",
+                "type": "png"
+            },
+            {
+                "file": "images/20.png",
+                "name": "WEATHER_ICON_20",
+                "type": "png"
+            },
+            {
+                "file": "images/2.png",
+                "name": "WEATHER_ICON_2",
+                "type": "png"
+            },
+            {
+                "file": "images/19.png",
+                "name": "WEATHER_ICON_19",
+                "type": "png"
+            },
+            {
+                "file": "images/18.png",
+                "name": "WEATHER_ICON_18",
+                "type": "png"
+            },
+            {
+                "file": "images/17.png",
+                "name": "WEATHER_ICON_17",
+                "type": "png"
+            },
+            {
+                "file": "images/16.png",
+                "name": "WEATHER_ICON_16",
+                "type": "png"
+            },
+            {
+                "file": "images/15.png",
+                "name": "WEATHER_ICON_15",
+                "type": "png"
+            },
+            {
+                "file": "images/14.png",
+                "name": "WEATHER_ICON_14",
+                "type": "png"
+            },
+            {
+                "file": "images/13.png",
+                "name": "WEATHER_ICON_13",
+                "type": "png"
+            },
+            {
+                "file": "images/12.png",
+                "name": "WEATHER_ICON_12",
+                "type": "png"
+            },
+            {
+                "file": "images/11.png",
+                "name": "WEATHER_ICON_11",
+                "type": "png"
+            },
+            {
+                "file": "images/10.png",
+                "name": "WEATHER_ICON_10",
+                "type": "png"
+            },
+            {
+                "file": "images/1.png",
+                "name": "WEATHER_ICON_1",
+                "type": "png"
+            },
+            {
+                "file": "images/0.png",
+                "name": "WEATHER_ICON_0",
+                "type": "png"
+            }
+        ]
     },
     "sdkVersion": "3",
     "shortName": "instant-forecast",
     "targetPlatforms": [
         "aplite",
-        "basalt",
-        "chalk"
+        "basalt"
     ],
     "uuid": "4c3de9f4-dff2-4c76-af05-1a85dd522063",
     "versionLabel": "1.0",
