@@ -134,6 +134,27 @@ var Weather = (function() {
   self.smallId = function(bigId) {
     throw "Not yet implemented";
   };
+
+  self.createWeatherModel = function(forecast_start, highs, lows, ids) {
+    var expected_length = highs.length;
+    
+    // Check our assumptions
+    if(lows.length != expected_length) {
+      throw "Length of lows was different than highs, expected [" + expected_length + "] but got [" + lows.length + "]";
+    } 
+
+    if(ids.length != expected_length) {
+      throw "Length of ids was different than highs, expected [" + expected_length + "] but got [" + ids.length + "]";
+    }
+
+    return {
+      "MESSAGE_TYPE" : ByteConversions.toInt8ByteArray(Constants.MessageTypes.WEATHER_REPORT),
+      // "WEATHER_FORECAST_START" : ByteConversions.toInt8ByteArray(forecastPieces[0].FCTTIME.hour),
+      // "WEATHER_ICON_OFFSET" : ByteConversions.toInt8ByteArray(self.getIconId(current.icon, sunPhaseEpochs)),
+      "WEATHER_FORECAST_HIGHS" : [].concat.apply([], highs.map(ByteConversions.toInt8ByteArray)),
+      "WEATHER_FORECAST_LOWS" : [].concat.apply([], lows.map(ByteConversions.toInt8ByteArray))
+    };
+  };
   
   self.weatherSuccess = function(weather) {
     console.log(weather.response);
@@ -145,6 +166,9 @@ var Weather = (function() {
     var highs = list.map(function(x) {return x.temp.max;});
     var lows = list.map(function(x) {return x.temp.min;});
     var ids = list.map(function(x) {return parseInt(x.weather.id)});
+    var start_date = list[0].dt;
+
+    self.sendWeather(self.createWeatherModel(start_date, highs, lows, ids));
   };
   
   self.weatherFailed = function(error) {
