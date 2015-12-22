@@ -10,6 +10,11 @@ char* copy_string(const char* source, size_t max) {
   return destination;
 }
 
+int16_t celsius_to_fahrenheit(int8_t celsius) {
+  float converted = (celsius * 1.8) + 32;
+  return (int16_t) converted;
+}
+
 uint16_t scale_length(uint16_t max_size, float percentage) {
   return ((float) max_size) * percentage;
 }
