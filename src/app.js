@@ -3,8 +3,8 @@ var Constants = {
     "appId" : "%OPEN_WEATHER_MAP_KEY%",
     "baseUrl" : "http://api.openweathermap.org/data/2.5/forecast/daily",
     "format" : "json",
-    "maxResults" : 10,
-    "units" : "imperial"
+    "maxResults" : 11,
+    "units" : "metric"
   },
   "MessageTypes" : {
     "PHONE_READY" : 0,
