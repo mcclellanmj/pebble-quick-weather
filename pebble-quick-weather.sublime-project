@@ -9,7 +9,7 @@
 		"cc_include_options" :
     	[
         "-I/home/matt/development/libraries/PebbleSDK-3.4/Pebble/aplite/include",
-    		"-I/home/matt/development/projects/PebbleWeatherFace/build/basalt/",
+    		"-I/home/matt/development/projects/pebble-quick-weather/build/basalt",
         "-Wall"
     	],
     	"tab_size": 2,

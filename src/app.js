@@ -31,8 +31,9 @@ var ArrayUtils = (function() {
   */
   self.sequence = function(arrays) {
     var final = [];
+
     arrays.forEach(function(element) {
-      element.forEach(function(item) { final.append(item) });
+      element.forEach(function(item) { final.push(item) });
     });
   };
   
@@ -154,43 +155,41 @@ var Weather = (function() {
     return "1";
   };
 
-  self.createWeatherModel = function(forecast_start, highs, lows, ids) {
-    var expected_length = highs.length;
+  self.createPebbleModel = function(forecastStart, highs, lows, ids) {
+    var expectedLength = highs.length;
     
     // Check our assumptions
-    if(lows.length != expected_length) {
-      throw "Length of lows was different than highs, expected [" + expected_length + "] but got [" + lows.length + "]";
+    if(lows.length != expectedLength) {
+      throw "Length of lows was different than highs, expected [" + expectedLength + "] but got [" + lows.length + "]";
     } 
 
-    if(ids.length != expected_length) {
-      throw "Length of ids was different than highs, expected [" + expected_length + "] but got [" + ids.length + "]";
+    if(ids.length != expectedLength) {
+      throw "Length of ids was different than highs, expected [" + expectedLength + "] but got [" + ids.length + "]";
     }
     
     var highBytes = [].concat.apply([], highs.map(ByteConversions.toInt8ByteArray));
     var lowBytes = [].concat.apply([], lows.map(ByteConversions.toInt8ByteArray));
-    var forecastIds = [].concat.apply([], ids.map(function(id) { ByteConversions.toInt8ByteArray(self.smallId(id));}));
+    var forecastIds = [].concat.apply([], ids.map(function(id) { return ByteConversions.toInt8ByteArray(self.smallId(id));}));
     var weatherStructs = ArrayUtils.sequence([forecastIds, highBytes, lowBytes]);
 
     return {
       "MESSAGE_TYPE" : ByteConversions.toInt8ByteArray(Constants.MessageTypes.WEATHER_REPORT),
-      "WEATHER_START" : ByteConversions.toInt32ByteArray(forecast_start),
+      "WEATHER_START" : ByteConversions.toInt32ByteArray(forecastStart),
       "WEATHER_FORECASTS" : weatherStructs
     };
   };
-  
+
   self.weatherSuccess = function(weather) {
-    console.log(weather.response);
-    
     var response = JSON.parse(weather.response);
-    console.log(response.list);
     
     var list = response.list;
     var highs = list.map(function(x) {return x.temp.max;});
     var lows = list.map(function(x) {return x.temp.min;});
     var ids = list.map(function(x) {return parseInt(x.weather.id)});
-    var start_date = list[0].dt;
+    var startDate = list[0].dt;
 
-    self.sendWeather(self.createWeatherModel(start_date, highs, lows, ids));
+    var weatherModel = self.createPebbleModel(startDate, highs, lows, ids);
+    Pebble.sendAppMessage(weatherModel);
   };
   
   self.weatherFailed = function(error) {
@@ -210,34 +209,26 @@ var Weather = (function() {
   };
 })();
 
-var MessageHandler = (function(handlers) {
+var MessageHandler = (function() {
   var self = {};
   
-  // Check preconditions
-  if(handlers === undefined) {
-    throw "Handlers is undefined"
-  }
-  
-  if(handlers.length < 1) {
-    throw "No handlers were created, message handler will not be able to handle messages"
-  }
-  
-  self.handlers = handlers;
-  
   self.handleMessage = function(message) {
-    var messageType = "???";
-    throw "Not implemented";
+    var messageType = message.MESSAGE_TYPE;
+    console.log("Got message of type [" + messageType + "]");
     
-    var handler = handlers[messageType];
-    if(handler === undefined) {
-      throw "No handler for message of type [" + messageType + "]";
+    if(messageType === Constants.MessageTypes.FETCH_WEATHER) {
+      console.log("Start fetching the weather");
+      navigator.geolocation.getCurrentPosition(Weather.retrieve, console.log, Constants.LocationOptions);
+    } else {
+      console.log("Received unknown message type of [" + messageType + "]");
     }
+
   };
   
   return {
     'handleMessage' : self.handleMessage
   };
-});
+})();
 
 Pebble.addEventListener('ready', function() {
     console.log('JavaScript app ready and running');
@@ -246,11 +237,11 @@ Pebble.addEventListener('ready', function() {
   }
 );
 
-var messageHandler = new MessageHandler([function(message) {console.log(message);}]);
 Pebble.addEventListener('appmessage', function(e) {
     var msg = e.payload;
-    messageHandler.handleMessage(msg);
+    console.log("Got message from the watch");
+    MessageHandler.handleMessage(msg);
   }
 );
 
-navigator.geolocation.getCurrentPosition(Weather.retrieve, console.log, Constants.LocationOptions);
+// navigator.geolocation.getCurrentPosition(Weather.retrieve, console.log, Constants.LocationOptions);
