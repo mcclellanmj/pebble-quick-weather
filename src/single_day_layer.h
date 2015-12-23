@@ -3,9 +3,13 @@
 #include "copying_text_layer.h"
 
 typedef struct {
+  uint8_t forecast_code;
   int16_t high_temperature;
   int16_t low_temperature;
-  uint8_t icon;
+} WeatherInformation;
+
+typedef struct {
+  WeatherInformation weather_information;
   time_t date;
 } SingleDayWeather;
 

@@ -22,6 +22,25 @@ var Constants = {
   },
 };
 
+var ArrayUtils = (function() {
+  var self = {};
+  
+  /**
+  * Collapse a sequence of arrays into a single array
+  * For example [[a,b], [c,d]] will become a,c,b,d
+  */
+  self.sequence = function(arrays) {
+    var final = [];
+    arrays.forEach(function(element) {
+      element.forEach(function(item) { final.append(item) });
+    });
+  };
+  
+  return {
+    'sequence' : self.sequence
+  };
+})();
+
 var KeyValueFunctions = (function() {
   var self = {};
   
@@ -132,7 +151,7 @@ var Weather = (function() {
   };
   
   self.smallId = function(bigId) {
-    throw "Not yet implemented";
+    return "1";
   };
 
   self.createWeatherModel = function(forecast_start, highs, lows, ids) {
@@ -146,13 +165,16 @@ var Weather = (function() {
     if(ids.length != expected_length) {
       throw "Length of ids was different than highs, expected [" + expected_length + "] but got [" + ids.length + "]";
     }
+    
+    var highBytes = [].concat.apply([], highs.map(ByteConversions.toInt8ByteArray));
+    var lowBytes = [].concat.apply([], lows.map(ByteConversions.toInt8ByteArray));
+    var forecastIds = [].concat.apply([], ids.map(function(id) { ByteConversions.toInt8ByteArray(self.smallId(id));}));
+    var weatherStructs = ArrayUtils.sequence([forecastIds, highBytes, lowBytes]);
 
     return {
       "MESSAGE_TYPE" : ByteConversions.toInt8ByteArray(Constants.MessageTypes.WEATHER_REPORT),
-      // "WEATHER_FORECAST_START" : ByteConversions.toInt8ByteArray(forecastPieces[0].FCTTIME.hour),
-      // "WEATHER_ICON_OFFSET" : ByteConversions.toInt8ByteArray(self.getIconId(current.icon, sunPhaseEpochs)),
-      "WEATHER_FORECAST_HIGHS" : [].concat.apply([], highs.map(ByteConversions.toInt8ByteArray)),
-      "WEATHER_FORECAST_LOWS" : [].concat.apply([], lows.map(ByteConversions.toInt8ByteArray))
+      "WEATHER_START" : ByteConversions.toInt32ByteArray(forecast_start),
+      "WEATHER_FORECASTS" : weatherStructs
     };
   };
   
