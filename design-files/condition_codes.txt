@@ -1,0 +1,73 @@
+1 thunderstorm with light rain
+2 thunderstorm with rain
+3 thunderstorm with heavy rain
+4 light thunderstorm
+5 thunderstorm
+6 heavy thunderstorm
+7 ragged thunderstorm 
+8 thunderstorm with light drizzle 
+9 thunderstorm with drizzle 
+10 thunderstorm with heavy drizzle 
+11 light intensity drizzle 
+12 drizzle 
+13 heavy intensity drizzle 
+14 light intensity drizzle rain
+15 drizzle rain
+16 heavy intensity drizzle rain
+17 shower rain and drizzle 
+18 heavy shower rain and drizzle 
+19 shower drizzle
+20 light rain
+21 moderate rain 
+22 heavy intensity rain
+23 very heavy rain 
+24 extreme rain
+25 freezing rain 
+26 light intensity shower rain 
+27 shower rain 
+28 heavy intensity shower rain 
+29 ragged shower rain
+30 light snow
+31 snow
+32 heavy snow
+33 sleet
+34 shower sleet 
+35 light rain and snow  
+36 rain and snow  
+37 light shower snow  
+38 shower snow  
+39 heavy shower snow  
+40 mist 
+41 smoke  
+42 haze 
+43 sand, dust whirls  
+44 fog  
+45 sand 
+46 dust 
+47 volcanic ash 
+48 squalls  
+49 tornado  
+50 clear sky
+51 few clouds
+52 scattered clouds
+53 broken clouds
+54 overcast clouds
+55 tornado
+56 tropical storm
+57 hurricane
+58 cold
+59 hot
+60 windy
+61 hail
+62 calm
+63 light breeze
+64 gentle breeze
+65 moderate breeze
+66 fresh breeze
+67 strong breeze
+68 high wind, near gale
+69 gale
+70 severe gale
+71 storm
+72 violent storm
+73 hurricane
