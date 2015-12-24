@@ -20,7 +20,9 @@ var Constants = {
   "HTTP" : {
     "requestTimeout" : 30000
   },
+  "LongToShortMap" : "%GENERATED_WEATHER_MAPPING%"
 };
+
 
 var ArrayUtils = (function() {
   var self = {};
@@ -157,7 +159,13 @@ var Weather = (function() {
   };
   
   self.smallId = function(bigId) {
-    return "1";
+    if(!Constants.LongToShortMap.hasOwnProperty(bigId)) {
+      var message = "The forecast code [" + bigId + "] had no mapping in our forecast mappings";
+      console.log(message);
+      throw message;
+    }
+
+    return Constants.LongToShortMap[bigId];
   };
 
   self.createPebbleModel = function(forecastStart, highs, lows, ids) {
@@ -191,7 +199,7 @@ var Weather = (function() {
 
     var highs = list.map(function(x) {return x.temp.max;});
     var lows = list.map(function(x) {return x.temp.min;});
-    var ids = list.map(function(x) {return parseInt(x.weather.id)});
+    var ids = list.map(function(x) {return x.weather[0]['id']});
     var startDate = list[0].dt;
 
     var weatherModel = self.createPebbleModel(startDate, highs, lows, ids);
