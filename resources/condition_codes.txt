@@ -1,73 +1,73 @@
-0 19 thunderstorm with light rain
-1 20 thunderstorm with rain
-2 20 thunderstorm with heavy rain
-3 19 light thunderstorm
-4 20 thunderstorm
-5 20 heavy thunderstorm
-6 20 ragged thunderstorm 
-7 19 thunderstorm with light drizzle 
-8 20 thunderstorm with drizzle 
-9 20 thunderstorm with heavy drizzle 
-10 10 light intensity drizzle 
-11 10 drizzle 
-12 11 heavy intensity drizzle 
-13 10 light intensity drizzle rain
-14 10 drizzle rain
-15 11 heavy intensity drizzle rain
-16 10 shower rain and drizzle 
-17 11 heavy shower rain and drizzle 
-18 10 shower drizzle
-19 10 light rain
-20 10 moderate rain 
-21 11 heavy intensity rain
-22 11 very heavy rain 
-23 11 extreme rain
-24 13 freezing rain 
-25 10 light intensity shower rain 
-26 10 shower rain 
-27 11 heavy intensity shower rain 
-28 11 ragged shower rain
-29 15 light snow
-30 16 snow
-31 16 heavy snow
-32 13 sleet
-33 13 shower sleet 
-34 18 light rain and snow  
-35 18 rain and snow  
-36 18 light shower snow  
-37 18 shower snow  
-38 18 heavy shower snow  
-39 9 mist 
-40 9 smoke  
-41 9 haze 
-42 8 sand, dust whirls  
-43 9 fog  
-44 8 sand 
-45 8 dust 
-46 8 volcanic ash 
-47 11 squalls  
-48 20 tornado  
-49 0 clear sky
-50 1 few clouds
-51 2 scattered clouds
-52 3 broken clouds
-53 4 overcast clouds
-54 20 tornado
-55 20 tropical storm
-56 20 hurricane
-57 21 cold
-58 22 hot
-59 8 windy
-60 13 hail
-61 0 calm
-62 8 light breeze
-63 8 gentle breeze
-64 8 moderate breeze
-65 8 fresh breeze
-66 8 strong breeze
-67 8 high wind, near gale
-68 8 gale
-69 8 severe gale
-70 20 storm
-71 20 violent storm
-72 20 hurricane
+200 0 19 thunderstorm with light rain
+201 1 20 thunderstorm with rain
+202 2 20 thunderstorm with heavy rain
+210 3 19 light thunderstorm
+211 4 20 thunderstorm
+212 5 20 heavy thunderstorm
+221 6 20 ragged thunderstorm
+230 7 19 thunderstorm with light drizzle
+231 8 20 thunderstorm with drizzle
+232 9 20 thunderstorm with heavy drizzle
+300 10 10 light intensity drizzle
+301 11 10 drizzle
+302 12 11 heavy intensity drizzle
+310 13 10 light intensity drizzle rain
+311 14 10 drizzle rain
+312 15 11 heavy intensity drizzle rain
+313 16 10 shower rain and drizzle
+314 17 11 heavy shower rain and drizzle
+321 18 10 shower drizzle
+500 19 10 light rain
+501 20 10 moderate rain
+502 21 11 heavy intensity rain
+503 22 11 very heavy rain
+504 23 11 extreme rain
+511 24 13 freezing rain
+520 25 10 light intensity shower rain
+521 26 10 shower rain
+522 27 11 heavy intensity shower rain
+531 28 11 ragged shower rain
+600 29 15 light snow
+601 30 16 snow
+602 31 16 heavy snow
+611 32 13 sleet
+612 33 13 shower sleet
+615 34 18 light rain and snow
+616 35 18 rain and snow
+620 36 18 light shower snow
+621 37 18 shower snow
+622 38 18 heavy shower snow
+701 39 9 mist
+711 40 9 smoke
+721 41 9 haze
+731 42 8 sand, dust whirls
+741 43 9 fog
+751 44 8 sand
+761 45 8 dust
+762 46 8 volcanic ash
+771 47 11 squalls
+781 48 20 tornado
+800 49 0 clear sky
+801 50 1 few clouds
+802 51 2 scattered clouds
+803 52 3 broken clouds
+804 53 4 overcast clouds
+900 54 20 tornado
+901 55 20 tropical storm
+902 56 20 hurricane
+903 57 21 cold
+904 58 22 hot
+905 59 8 windy
+906 60 13 hail
+951 61 0 calm
+952 62 8 light breeze
+953 63 8 gentle breeze
+954 64 8 moderate breeze
+955 65 8 fresh breeze
+956 66 8 strong breeze
+957 67 8 high wind, near gale
+958 68 8 gale
+959 69 8 severe gale
+960 70 20 storm
+961 71 20 violent storm
+962 72 20 hurricane
