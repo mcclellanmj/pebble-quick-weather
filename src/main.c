@@ -1,9 +1,12 @@
 #include <pebble.h>
 #include "scrolling_forecast_layer.h"
+#include "single_day_layer.h"
 
 // TODO: Create a layer with 32 pixel height of the weather for a single day
 enum {
   MESSAGE_TYPE = 0,
+  WEATHER_START = 1,
+  WEATHER_FORECASTS = 2
 };
 
 enum {
@@ -12,6 +15,12 @@ enum {
   FETCH_WEATHER = 2,
   WEATHER_FAILED = 3
 };
+
+typedef struct {
+  uint8_t forecast_code;
+  int8_t high_temperature;
+  int8_t low_temperature;
+} PhoneWeatherModel;
 
 typedef struct {
   Window *main_window;
@@ -53,6 +62,13 @@ static void inbox_received_handler(DictionaryIterator *iterator, void *context) 
   
   if(request_type == WEATHER_REPORT) {
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Got a weather report");
+    
+    PhoneWeatherModel* forecast_array = (PhoneWeatherModel*) malloc(sizeof(PhoneWeatherModel) * 10);
+    memcpy(forecast_array, dict_find(iterator, WEATHER_FORECASTS)->value->data, 10 * sizeof(PhoneWeatherModel) );
+
+    for(int i = 0; i < 10; i++) {
+      APP_LOG(APP_LOG_LEVEL_DEBUG, "Got a day... [%d]", forecast_array[i].high_temperature);
+    }
   }
 }
 

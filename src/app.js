@@ -30,11 +30,16 @@ var ArrayUtils = (function() {
   * For example [[a,b], [c,d]] will become a,c,b,d
   */
   self.sequence = function(arrays) {
-    var final = [];
+    var toReturn = [];
+    var lengths = arrays[0].length;
 
-    arrays.forEach(function(element) {
-      element.forEach(function(item) { final.push(item) });
-    });
+    for(var i = 0; i < lengths; i++) {
+      for(var j = 0; j < arrays.length; j++) {
+        toReturn.push(arrays[j][i]);
+      }
+    }
+
+    return toReturn;
   };
   
   return {
@@ -182,7 +187,8 @@ var Weather = (function() {
   self.weatherSuccess = function(weather) {
     var response = JSON.parse(weather.response);
     
-    var list = response.list;
+    var list = response.list.slice(1);
+
     var highs = list.map(function(x) {return x.temp.max;});
     var lows = list.map(function(x) {return x.temp.min;});
     var ids = list.map(function(x) {return parseInt(x.weather.id)});
