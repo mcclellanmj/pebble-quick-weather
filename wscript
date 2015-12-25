@@ -15,6 +15,19 @@ except (ImportError, CommandNotFound):
 top = '.'
 out = 'build'
 
+def build_source_from_condition_codes(task):
+    condition_codes = task.inputs[0].abspath()
+    c_mapping = task.outputs[0].abspath()
+    js_mapping = task.outputs[0].abspath()
+
+    with open(condition_codes, "r") as condition_code_file:
+        # Load all the information about the condition codes
+        with open(js_mapping, "w") as js_mapping:
+            # write out over the MAPPING token
+
+        with open(c_mapping, "w") as c_mapping:
+            # write out the c file which will be included
+
 def replace_js_environment(task):
     input = task.inputs[0].abspath()
     print("Input is [%s]" % input)
@@ -54,8 +67,7 @@ def build(ctx):
         ctx.set_env(ctx.all_envs[p])
         ctx.set_group(ctx.env.PLATFORM_NAME)
         app_elf='{}/pebble-app.elf'.format(p)
-        ctx.pbl_program(source=ctx.path.ant_glob('src/**/*.c'),
-        target=app_elf)
+        ctx.pbl_program(source=ctx.path.ant_glob('src/**/*.c'), target=app_elf)
 
         if build_worker:
             worker_elf='{}/pebble-worker.elf'.format(p)
