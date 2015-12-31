@@ -1,5 +1,4 @@
-
-    #
+#
 # This file is the default set of rules to compile a Pebble project.
 #
 # Feel free to customize this to your needs.
@@ -14,19 +13,6 @@ except (ImportError, CommandNotFound):
 
 top = '.'
 out = 'build'
-
-def build_source_from_condition_codes(task):
-    condition_codes = task.inputs[0].abspath()
-    c_mapping = task.outputs[0].abspath()
-    js_mapping = task.outputs[0].abspath()
-
-    with open(condition_codes, "r") as condition_code_file:
-        # Load all the information about the condition codes
-        with open(js_mapping, "w") as js_mapping:
-            # write out over the MAPPING token
-
-        with open(c_mapping, "w") as c_mapping:
-            # write out the c file which will be included
 
 def replace_js_environment(task):
     input = task.inputs[0].abspath()
