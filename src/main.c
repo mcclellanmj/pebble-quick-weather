@@ -62,12 +62,20 @@ static void inbox_received_handler(DictionaryIterator *iterator, void *context) 
   
   if(request_type == WEATHER_REPORT) {
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Got a weather report");
+    time_t start_time = dict_find(iterator, WEATHER_START)->value->int32;
     
     PhoneWeatherModel* forecast_array = (PhoneWeatherModel*) malloc(sizeof(PhoneWeatherModel) * 10);
     memcpy(forecast_array, dict_find(iterator, WEATHER_FORECASTS)->value->data, 10 * sizeof(PhoneWeatherModel) );
 
     for(int i = 0; i < 10; i++) {
-      APP_LOG(APP_LOG_LEVEL_DEBUG, "Got a day... [%d]", forecast_array[i].high_temperature);
+      PhoneWeatherModel current_weather = forecast_array[i];
+      SingleDayWeather single_day_weather = {
+        .date = start_time + (i * 86400),
+        .forecast_code = current_weather.forecast_code,
+        .high_temperature = current_weather.high_temperature,
+        .low_temperature = current_weather.low_temperature
+      };
+      APP_LOG(APP_LOG_LEVEL_DEBUG, "Got a day... [%d], [%d]", forecast_array[i].high_temperature, (int) single_day_weather.date);
     }
   }
 }
