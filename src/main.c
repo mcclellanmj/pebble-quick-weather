@@ -64,6 +64,7 @@ static SingleDayWeather phone_model_to_single_day(PhoneWeatherModel phone_model,
 
 static void inbox_received_handler(DictionaryIterator *iterator, void *context) {
   Application *application = (Application *) context;
+
   Tuple *init_tuple = dict_find(iterator, MESSAGE_TYPE);
   uint8_t request_type = init_tuple->value->uint8;
   
@@ -95,12 +96,15 @@ static void inbox_received_handler(DictionaryIterator *iterator, void *context) 
 void handle_init(Application *application) {
   application->main_window = window_create();
   Layer *window_layer = window_get_root_layer(application->main_window);
+
   GRect window_bounds = layer_get_bounds(window_layer);
   application->forecast_layer = scrolling_forecast_layer_create(GRect(0, 0, window_bounds.size.w, window_bounds.size.h), empty_forecast());
 
   app_message_register_inbox_received(inbox_received_handler);
   app_message_set_context(application);
   app_message_open(531, 9);
+
+  window_set_background_color(application->main_window, GColorBlack);
   window_stack_push(application->main_window, true);
 }
 
