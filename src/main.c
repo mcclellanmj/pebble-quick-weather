@@ -1,6 +1,8 @@
 #include <pebble.h>
 #include "scrolling_forecast_layer.h"
 #include "single_day_layer.h"
+#define SECONDS_PER_DAY 86400
+#define NUMBER_OF_FORECAST_DAYS 10
 
 // TODO: Create a layer with 32 pixel height of the weather for a single day
 enum {
@@ -64,13 +66,14 @@ static void inbox_received_handler(DictionaryIterator *iterator, void *context) 
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Got a weather report");
     time_t start_time = dict_find(iterator, WEATHER_START)->value->int32;
     
-    PhoneWeatherModel* forecast_array = (PhoneWeatherModel*) malloc(sizeof(PhoneWeatherModel) * 10);
-    memcpy(forecast_array, dict_find(iterator, WEATHER_FORECASTS)->value->data, 10 * sizeof(PhoneWeatherModel) );
+    PhoneWeatherModel* forecast_array = (PhoneWeatherModel*) malloc(sizeof(PhoneWeatherModel) * NUMBER_OF_FORECAST_DAYS);
+    memcpy(forecast_array, dict_find(iterator, WEATHER_FORECASTS)->value->data, NUMBER_OF_FORECAST_DAYS * sizeof(PhoneWeatherModel) );
 
-    for(int i = 0; i < 10; i++) {
+    for(int i = 0; i < NUMBER_OF_FORECAST_DAYS; i++) {
       PhoneWeatherModel current_weather = forecast_array[i];
       SingleDayWeather single_day_weather = {
-        .date = start_time + (i * 86400),
+        .valid = true,
+        .date = start_time + (i * SECONDS_PER_DAY),
         .forecast_code = current_weather.forecast_code,
         .high_temperature = current_weather.high_temperature,
         .low_temperature = current_weather.low_temperature
