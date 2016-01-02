@@ -19,4 +19,5 @@ typedef struct {
 } SingleDayWeatherLayer;
 
 SingleDayWeatherLayer* single_day_weather_layer_create(GRect frame, SingleDayWeather weather);
-void single_day_weather_layer_destroy(SingleDayWeatherLayer *copying_text_layer);
+void single_day_weather_layer_destroy(SingleDayWeatherLayer *single_day_weather_layer);
+Layer* single_day_weather_layer_get_layer(SingleDayWeatherLayer *single_day_weather_layer);

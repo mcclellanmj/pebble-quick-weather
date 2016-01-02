@@ -36,7 +36,15 @@ SingleDayWeatherLayer* single_day_weather_layer_create(GRect frame, SingleDayWea
     gbitmap_create_with_resource(condition_code_to_icon(weather.forecast_code))
   );
 
+  layer_add_child(root_layer, copying_text_layer_get_layer(single_day_weather_layer->temperature_layer));
+  layer_add_child(root_layer, copying_text_layer_get_layer(single_day_weather_layer->date_layer));
+  layer_add_child(root_layer, bitmap_layer_get_layer(single_day_weather_layer->icon_layer));
+
   return single_day_weather_layer;
+}
+
+Layer* single_day_weather_layer_get_layer(SingleDayWeatherLayer *single_day_weather_layer) {
+  return single_day_weather_layer->root_layer;
 }
 
 void single_day_weather_layer_destroy(SingleDayWeatherLayer *single_day_weather_layer) {

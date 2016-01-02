@@ -52,7 +52,18 @@ static bool send_request() {
   return true;
 }
 
+static SingleDayWeather phone_model_to_single_day(PhoneWeatherModel phone_model, time_t date) {
+  return (SingleDayWeather) {
+    .valid = true,
+    .date = date,
+    .forecast_code = phone_model.forecast_code,
+    .high_temperature = phone_model.high_temperature,
+    .low_temperature = phone_model.low_temperature
+  };
+}
+
 static void inbox_received_handler(DictionaryIterator *iterator, void *context) {
+  Application *application = (Application *) context;
   Tuple *init_tuple = dict_find(iterator, MESSAGE_TYPE);
   uint8_t request_type = init_tuple->value->uint8;
   
@@ -69,17 +80,15 @@ static void inbox_received_handler(DictionaryIterator *iterator, void *context) 
     PhoneWeatherModel* forecast_array = (PhoneWeatherModel*) malloc(sizeof(PhoneWeatherModel) * NUMBER_OF_FORECAST_DAYS);
     memcpy(forecast_array, dict_find(iterator, WEATHER_FORECASTS)->value->data, NUMBER_OF_FORECAST_DAYS * sizeof(PhoneWeatherModel) );
 
+    SingleDayWeatherLayer* weather_layers[10];
     for(int i = 0; i < NUMBER_OF_FORECAST_DAYS; i++) {
-      PhoneWeatherModel current_weather = forecast_array[i];
-      SingleDayWeather single_day_weather = {
-        .valid = true,
-        .date = start_time + (i * SECONDS_PER_DAY),
-        .forecast_code = current_weather.forecast_code,
-        .high_temperature = current_weather.high_temperature,
-        .low_temperature = current_weather.low_temperature
-      };
-      APP_LOG(APP_LOG_LEVEL_DEBUG, "Got a day... [%d], [%d]", forecast_array[i].high_temperature, (int) single_day_weather.date);
+      PhoneWeatherModel phone_model = forecast_array[i];
+      SingleDayWeather weather = phone_model_to_single_day(phone_model, start_time + (i * SECONDS_PER_DAY));
+      weather_layers[i] = single_day_weather_layer_create(GRect(0,0,0,0), weather);
     }
+
+    Layer *root_layer = window_get_root_layer(application->main_window);
+    layer_add_child(root_layer, single_day_weather_layer_get_layer(weather_layers[0]));
   }
 }
 
