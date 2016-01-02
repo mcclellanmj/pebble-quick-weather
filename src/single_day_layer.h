@@ -3,6 +3,7 @@
 #include "copying_text_layer.h"
 
 typedef struct {
+  bool valid;
   uint8_t forecast_code;
   int16_t high_temperature;
   int16_t low_temperature;
@@ -10,9 +11,10 @@ typedef struct {
 } SingleDayWeather;
 
 typedef struct {
+  Layer *root_layer;
   SingleDayWeather weather;
   CopyingTextLayer *temperature_layer;
-  CopyingTextLayer *day_layer;
+  CopyingTextLayer *date_layer;
   BitmapLayer *icon_layer;
 } SingleDayWeatherLayer;
 
