@@ -16,6 +16,7 @@ typedef struct {
   CopyingTextLayer *temperature_layer;
   CopyingTextLayer *date_layer;
   BitmapLayer *icon_layer;
+  GBitmap* bitmap;
 } SingleDayWeatherLayer;
 
 SingleDayWeatherLayer* single_day_weather_layer_create(GRect frame, SingleDayWeather weather);

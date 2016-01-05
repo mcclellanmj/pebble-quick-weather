@@ -82,14 +82,13 @@ static void inbox_received_handler(DictionaryIterator *iterator, void *context) 
     memcpy(forecast_array, dict_find(iterator, WEATHER_FORECASTS)->value->data, NUMBER_OF_FORECAST_DAYS * sizeof(PhoneWeatherModel) );
 
     SingleDayWeatherLayer* weather_layers[10];
+    Layer *root_layer = window_get_root_layer(application->main_window);
     for(int i = 0; i < NUMBER_OF_FORECAST_DAYS; i++) {
       PhoneWeatherModel phone_model = forecast_array[i];
       SingleDayWeather weather = phone_model_to_single_day(phone_model, start_time + (i * SECONDS_PER_DAY));
-      weather_layers[i] = single_day_weather_layer_create(GRect(0,0,0,0), weather);
+      weather_layers[i] = single_day_weather_layer_create(GRect(0, i * 33, 144, 33), weather);
+      layer_add_child(root_layer, single_day_weather_layer_get_layer(weather_layers[i]));
     }
-
-    Layer *root_layer = window_get_root_layer(application->main_window);
-    layer_add_child(root_layer, single_day_weather_layer_get_layer(weather_layers[0]));
   }
 }
 
