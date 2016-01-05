@@ -167,7 +167,6 @@ var Weather = (function() {
     }
 
     var smallId = Constants.LongToShortMap[bigId];
-    console.log("Id: ["+bigId+"] -> ["+smallId+"]");
     return smallId;
   };
 
