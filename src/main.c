@@ -1,8 +1,8 @@
 #include <pebble.h>
-#include "scrolling_forecast_layer.h"
 #include "single_day_layer.h"
 #define SECONDS_PER_DAY 86400
 #define NUMBER_OF_FORECAST_DAYS 10
+#define SIZE_OF_FORECAST_DAY 33
 
 // TODO: Create a layer with 32 pixel height of the weather for a single day
 enum {
@@ -26,14 +26,8 @@ typedef struct {
 
 typedef struct {
   Window *main_window;
-  ScrollingForecastLayer* forecast_layer;
 } Application;
 
-WeeklyForecast empty_forecast() {
-  return (WeeklyForecast) {
-    .valid = false
-  };
-}
 static bool send_request() {
   APP_LOG(APP_LOG_LEVEL_DEBUG, "Sending the Fetch Weather command to the phone");
   
@@ -74,21 +68,44 @@ static void inbox_received_handler(DictionaryIterator *iterator, void *context) 
     send_request();
   }
   
+  // TODO: Break up this area into smaller functions
+  // FIXME: remove repeated calls
   if(request_type == WEATHER_REPORT) {
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Got a weather report");
     time_t start_time = dict_find(iterator, WEATHER_START)->value->int32;
-    
-    PhoneWeatherModel* forecast_array = (PhoneWeatherModel*) malloc(sizeof(PhoneWeatherModel) * NUMBER_OF_FORECAST_DAYS);
-    memcpy(forecast_array, dict_find(iterator, WEATHER_FORECASTS)->value->data, NUMBER_OF_FORECAST_DAYS * sizeof(PhoneWeatherModel) );
+
+    ScrollLayer *scrolling_layer = scroll_layer_create(
+      GRect(0, 0, 144, 168)
+    );
+    scroll_layer_set_click_config_onto_window(scrolling_layer, application->main_window);
+    scroll_layer_set_content_size(scrolling_layer, GSize(144, 330));
+    scroll_layer_set_content_offset(scrolling_layer, GPoint(0, 168), true);
+
+    PhoneWeatherModel* forecast_array = (PhoneWeatherModel*) malloc(
+      sizeof(PhoneWeatherModel) * NUMBER_OF_FORECAST_DAYS
+    );
+
+    memcpy(
+      forecast_array, 
+      dict_find(iterator, WEATHER_FORECASTS)->value->data, 
+      NUMBER_OF_FORECAST_DAYS * sizeof(PhoneWeatherModel)
+    );
 
     SingleDayWeatherLayer* weather_layers[10];
     Layer *root_layer = window_get_root_layer(application->main_window);
     for(int i = 0; i < NUMBER_OF_FORECAST_DAYS; i++) {
       PhoneWeatherModel phone_model = forecast_array[i];
       SingleDayWeather weather = phone_model_to_single_day(phone_model, start_time + (i * SECONDS_PER_DAY));
-      weather_layers[i] = single_day_weather_layer_create(GRect(0, i * 33, 144, 33), weather);
-      layer_add_child(root_layer, single_day_weather_layer_get_layer(weather_layers[i]));
+
+      weather_layers[i] = single_day_weather_layer_create(
+        GRect(0, i * SIZE_OF_FORECAST_DAY, 144, SIZE_OF_FORECAST_DAY), 
+        weather
+      );
+
+      scroll_layer_add_child(scrolling_layer, single_day_weather_layer_get_layer(weather_layers[i]));
     }
+    
+    layer_add_child(root_layer, scroll_layer_get_layer(scrolling_layer));
   }
 }
 
@@ -97,7 +114,6 @@ void handle_init(Application *application) {
   Layer *window_layer = window_get_root_layer(application->main_window);
 
   GRect window_bounds = layer_get_bounds(window_layer);
-  application->forecast_layer = scrolling_forecast_layer_create(GRect(0, 0, window_bounds.size.w, window_bounds.size.h), empty_forecast());
 
   app_message_register_inbox_received(inbox_received_handler);
   app_message_set_context(application);
