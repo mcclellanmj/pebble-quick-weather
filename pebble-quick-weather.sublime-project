@@ -8,7 +8,7 @@
 	"settings" : {
 		"cc_include_options" :
     	[
-        "-I/home/matt/development/libraries/PebbleSDK-3.4/Pebble/aplite/include",
+        "-I/home/matt/.pebble-sdk/SDKs/3.8.2/sdk-core/pebble/aplite/include",
     		"-I/home/matt/development/projects/pebble-quick-weather/build/basalt",
         "-Wall"
     	],
