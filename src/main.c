@@ -112,9 +112,6 @@ static void inbox_received_handler(DictionaryIterator *iterator, void *context) 
 
 void handle_init(Application *application) {
   application->main_window = window_create();
-  Layer *window_layer = window_get_root_layer(application->main_window);
-
-  GRect window_bounds = layer_get_bounds(window_layer);
 
   app_message_register_inbox_received(inbox_received_handler);
   app_message_set_context(application);
