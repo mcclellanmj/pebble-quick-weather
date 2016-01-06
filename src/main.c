@@ -78,6 +78,7 @@ static void inbox_received_handler(DictionaryIterator *iterator, void *context) 
       GRect(0, 0, 144, 168)
     );
     scroll_layer_set_click_config_onto_window(scrolling_layer, application->main_window);
+    scroll_layer_set_paging(scrolling_layer, true);
     scroll_layer_set_content_size(scrolling_layer, GSize(144, 330));
     scroll_layer_set_content_offset(scrolling_layer, GPoint(0, 168), true);
 
