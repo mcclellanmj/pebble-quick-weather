@@ -110,8 +110,21 @@ static void inbox_received_handler(DictionaryIterator *iterator, void *context) 
   }
 }
 
+void initial_window_load(Window* window) {
+  Layer *root_layer = window_get_root_layer(window);
+}
+
+void initial_window_unload(Window* window) {
+
+}
+
 void handle_init(Application *application) {
   application->main_window = window_create();
+
+  window_set_window_handlers(application->main_window, (WindowHandlers) {
+    .load = initial_window_load,
+    .unload = initial_window_unload
+  });
 
   app_message_register_inbox_received(inbox_received_handler);
   app_message_set_context(application);
