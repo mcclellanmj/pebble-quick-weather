@@ -136,6 +136,16 @@
                 "file": "images/0.png",
                 "name": "WEATHER_ICON_0",
                 "type": "png"
+            },
+            {
+                "type": "raw",
+                "name": "HAPPY_WATCH",
+                "file": "images/happy_watch.pdc"
+            },
+            {
+                "type": "raw",
+                "name": "DEAD_WATCH",
+                "file": "images/dead_watch.pdc"
             }
         ]
     },

@@ -9,9 +9,9 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="155.62538mm"
-   height="184.53935mm"
-   viewBox="0 0 551.42852 653.87959"
+   width="144"
+   height="168"
+   viewBox="0 0 144 168"
    id="svg2"
    version="1.1"
    inkscape:version="0.91 r13725"
@@ -26,8 +26,8 @@
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.979899"
-     inkscape:cx="238.46638"
-     inkscape:cy="264.35067"
+     inkscape:cx="139.02831"
+     inkscape:cy="90.644715"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -40,8 +40,9 @@
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     showguides="true"
-     inkscape:guide-bbox="true">
+     showguides="false"
+     inkscape:guide-bbox="true"
+     units="px">
     <sodipodi:guide
        position="0,0"
        orientation="0,551.42852"
@@ -99,89 +100,89 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-85.714287,-220.93364)">
+     transform="translate(-85.714287,-706.81319)">
     <rect
        style="fill:#ffffff"
        id="rect3351"
-       width="497.14285"
-       height="648.57141"
-       x="111.42857"
-       y="223.79077" />
+       width="111.17714"
+       height="145.04144"
+       x="100.71465"
+       y="719.13794" />
     <rect
        style="fill:#000000"
        id="rect3353"
-       width="354.28571"
-       height="71.428566"
-       x="188.57143"
-       y="220.93364" />
+       width="79.229691"
+       height="15.973727"
+       x="117.96627"
+       y="718.49902" />
     <rect
        style="fill:#000000"
        id="rect3357"
-       width="351.42859"
-       height="377.14285"
-       x="191.42857"
-       y="360.93365" />
+       width="78.590744"
+       height="84.341278"
+       x="118.60522"
+       y="749.8075" />
     <rect
        style="fill:#ffffff"
        id="rect3359"
-       width="82.366928"
-       height="143.69398"
-       x="554.77588"
-       y="325.81107"
-       ry="17.142862" />
+       width="18.419893"
+       height="32.134598"
+       x="199.86139"
+       y="741.953"
+       ry="3.8336959" />
     <rect
        style="fill:#ffffff"
        id="rect3361"
-       width="71.284996"
-       height="82.857178"
-       x="566.20453"
-       y="518.07648"
-       ry="17.142853"
+       width="15.94162"
+       height="18.529531"
+       x="202.41719"
+       y="784.94971"
+       ry="3.8336937"
        rx="0" />
     <rect
        style="fill:#ffffff"
        id="rect3363"
-       width="78.877792"
-       height="161.59111"
-       x="556.59314"
-       y="652.36218"
-       ry="17.142857" />
+       width="17.639614"
+       height="36.136974"
+       x="200.26778"
+       y="814.98029"
+       ry="3.8336945" />
     <rect
        style="fill:#ffffff"
        id="rect3368"
-       width="54.285713"
-       height="122.85714"
-       x="85.714287"
-       y="352.36221"
-       ry="17.1429" />
+       width="12.140035"
+       height="27.474812"
+       x="94.964104"
+       y="747.89069"
+       ry="3.833704" />
     <rect
        style="fill:#ffffff"
        id="rect3372"
-       width="65.714287"
-       height="68.571426"
-       x="257.14285"
-       y="426.64792"
-       ry="17.1429" />
+       width="14.69583"
+       height="15.334778"
+       x="133.30106"
+       y="764.5033"
+       ry="3.833704" />
     <rect
        style="fill:#ffffff"
        id="rect3372-0"
-       width="65.714287"
-       height="68.571426"
-       x="412"
-       y="426.64792"
-       ry="17.1429" />
+       width="14.69583"
+       height="15.334778"
+       x="167.9321"
+       y="764.5033"
+       ry="3.833704" />
     <path
-       style="fill:#ffffff;fill-rule:evenodd;stroke:#000000;stroke-width:1.03230953px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 257.14886,603.8024 c 0,137.11168 216.83559,134.25519 219.88103,0"
+       style="fill:#ffffff;fill-rule:evenodd;stroke:#000000;stroke-width:0.23085763px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 133.3024,804.12078 c 0,30.66259 48.49142,30.02378 49.17247,0"
        id="path3428"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cc" />
     <rect
        style="fill:#000000"
        id="rect3353-6"
-       width="354.28571"
-       height="75.469177"
-       x="189.47505"
-       y="798.67255" />
+       width="79.229691"
+       height="16.877337"
+       x="118.16836"
+       y="847.70001" />
   </g>
 </svg>
