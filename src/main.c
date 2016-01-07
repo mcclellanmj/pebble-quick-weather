@@ -4,7 +4,6 @@
 #define NUMBER_OF_FORECAST_DAYS 10
 #define SIZE_OF_FORECAST_DAY 33
 
-// TODO: Create a layer with 32 pixel height of the weather for a single day
 enum {
   MESSAGE_TYPE = 0,
   WEATHER_START = 1,
@@ -110,11 +109,28 @@ static void inbox_received_handler(DictionaryIterator *iterator, void *context) 
   }
 }
 
-void initial_window_load(Window* window) {
-  Layer *root_layer = window_get_root_layer(window);
+static void draw_command(Layer *layer, GContext *context) {
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "drawing initial window");
+  GDrawCommandImage **image = (GDrawCommandImage **) layer_get_data(layer);
+
+  gdraw_command_image_get_bounds_size(*image);
+  gdraw_command_image_draw(context, *image, GPoint(0, 0));
 }
 
-void initial_window_unload(Window* window) {
+static void initial_window_load(Window* window) {
+  Layer *root_layer = window_get_root_layer(window);
+
+  Layer *happy_layer = layer_create_with_data(layer_get_frame(root_layer), sizeof(GDrawCommandImage **));
+  GDrawCommandImage *happy_watch_command = gdraw_command_image_create_with_resource(RESOURCE_ID_HAPPY_WATCH);
+
+  GDrawCommandImage **data = (GDrawCommandImage **) layer_get_data(happy_layer);
+  *data = happy_watch_command;
+
+  layer_set_update_proc(happy_layer, draw_command);
+  layer_add_child(root_layer, happy_layer);
+}
+
+static void initial_window_unload(Window* window) {
 
 }
 
