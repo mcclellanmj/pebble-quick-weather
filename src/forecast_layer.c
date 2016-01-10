@@ -1,5 +1,4 @@
 #include "forecast_layer.h"
-#define SIZE_OF_FORECAST_DAY 33
 
 ForecastLayer* forecast_layer_create(GRect frame, Forecast forecast) {
   Layer *root_layer = layer_create_with_data(frame, sizeof(ForecastLayer));
@@ -10,7 +9,7 @@ ForecastLayer* forecast_layer_create(GRect frame, Forecast forecast) {
     SingleDayWeather day = forecast.days[i];
     SingleDayWeatherLayer *single_day_weather_layer = forecast_layer->single_day_layers[i];
     single_day_weather_layer = single_day_weather_layer_create(
-      GRect(0, i * SIZE_OF_FORECAST_DAY, 144, SIZE_OF_FORECAST_DAY), 
+      GRect(0, i * HEIGHT_OF_DAY, 144, HEIGHT_OF_DAY), 
       day
     );
 

@@ -92,7 +92,7 @@ static void inbox_received_handler(DictionaryIterator *iterator, void *context) 
       NUMBER_OF_DAYS * sizeof(PhoneWeatherModel)
     );
 
-    SingleDayWeather single_day_weather[10];
+    SingleDayWeather single_day_weather[NUMBER_OF_DAYS];
     Layer *root_layer = window_get_root_layer(application->main_window);
     for(int i = 0; i < NUMBER_OF_DAYS; i++) {
       PhoneWeatherModel phone_model = forecast_array[i];
@@ -101,9 +101,12 @@ static void inbox_received_handler(DictionaryIterator *iterator, void *context) 
     }
 
     Forecast forecast;
-    memcpy(forecast.days, single_day_weather, sizeof(SingleDayWeather) * 10);
+    memcpy(forecast.days, single_day_weather, sizeof(SingleDayWeather) * NUMBER_OF_DAYS);
 
-    ForecastLayer *forecast_layer = forecast_layer_create(GRect(0, 0, 144, 33 * NUMBER_OF_DAYS), forecast);
+    ForecastLayer *forecast_layer = forecast_layer_create(
+      GRect(0, 0, 144, HEIGHT_OF_DAY * NUMBER_OF_DAYS), 
+      forecast
+    );
 
     scroll_layer_add_child(scrolling_layer, forecast_layer_get_layer(forecast_layer));
     layer_add_child(root_layer, scroll_layer_get_layer(scrolling_layer));
