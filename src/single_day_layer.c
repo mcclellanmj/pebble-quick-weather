@@ -2,7 +2,6 @@
 #include "single_day_layer.h"
 #include "copying_text_layer.h"
 #include "condition_codes.h"
-#include "util.h"
 
 static CopyingTextLayer* create_date_layer(GRect frame, time_t current_time) {
   char date_text[9];
@@ -32,8 +31,8 @@ SingleDayWeatherLayer* single_day_weather_layer_create(GRect frame, SingleDayWea
     .weather = weather,
     .temperature_layer = 
       create_temperature_layer(GRect(12, 8, 50, 30)
-        , celsius_to_fahrenheit(weather.high_temperature)
-        , celsius_to_fahrenheit(weather.low_temperature)
+        , weather.high_temperature
+        , weather.low_temperature
       ),
     .date_layer = 
       create_date_layer(GRect(4, 0, 80, 15)

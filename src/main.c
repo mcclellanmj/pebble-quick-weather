@@ -2,8 +2,14 @@
 #include "single_day_layer.h"
 #include "global_constants.h"
 #include "forecast_layer.h"
+#include "util.h"
 
 #define SECONDS_PER_DAY 86400
+
+typedef enum {
+  CELSIUS, 
+  FAHRENHEIT
+} TemperatureUnit;
 
 enum {
   MESSAGE_TYPE = 0,
@@ -46,14 +52,35 @@ static bool send_request() {
   return true;
 }
 
-static SingleDayWeather phone_model_to_single_day(PhoneWeatherModel phone_model, time_t date) {
+static int16_t convert_to_unit(int8_t temperature, TemperatureUnit unit) {
+  if(unit == CELSIUS) {
+    return temperature;
+  }
+
+  return celsius_to_fahrenheit(temperature);
+}
+
+static SingleDayWeather phone_model_to_single_day(PhoneWeatherModel phone_model, time_t date, TemperatureUnit unit) {
   return (SingleDayWeather) {
     .valid = true,
     .date = date,
     .forecast_code = phone_model.forecast_code,
-    .high_temperature = phone_model.high_temperature,
-    .low_temperature = phone_model.low_temperature
+    .high_temperature = convert_to_unit(phone_model.high_temperature, FAHRENHEIT),
+    .low_temperature = convert_to_unit(phone_model.low_temperature, FAHRENHEIT)
   };
+}
+
+static ScrollLayer* create_weather_scroll_layer(Window *main_window) {
+    ScrollLayer *scrolling_layer = scroll_layer_create(
+      GRect(0, 0, 144, 168)
+    );
+
+    scroll_layer_set_click_config_onto_window(scrolling_layer, main_window);
+    scroll_layer_set_paging(scrolling_layer, true);
+    scroll_layer_set_content_size(scrolling_layer, GSize(144, 330));
+    scroll_layer_set_content_offset(scrolling_layer, GPoint(0, 168), true);
+
+    return scrolling_layer;
 }
 
 static void inbox_received_handler(DictionaryIterator *iterator, void *context) {
@@ -74,29 +101,26 @@ static void inbox_received_handler(DictionaryIterator *iterator, void *context) 
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Got a weather report");
     time_t start_time = dict_find(iterator, WEATHER_START)->value->int32;
 
-    ScrollLayer *scrolling_layer = scroll_layer_create(
-      GRect(0, 0, 144, 168)
-    );
-    scroll_layer_set_click_config_onto_window(scrolling_layer, application->main_window);
-    scroll_layer_set_paging(scrolling_layer, true);
-    scroll_layer_set_content_size(scrolling_layer, GSize(144, 330));
-    scroll_layer_set_content_offset(scrolling_layer, GPoint(0, 168), true);
-
-    PhoneWeatherModel* forecast_array = (PhoneWeatherModel*) malloc(
-      sizeof(PhoneWeatherModel) * NUMBER_OF_DAYS
-    );
-
+    // Load the phone model, which is more optimized for size
+    PhoneWeatherModel forecast_array[NUMBER_OF_DAYS];
     memcpy(
       forecast_array, 
       dict_find(iterator, WEATHER_FORECASTS)->value->data, 
       NUMBER_OF_DAYS * sizeof(PhoneWeatherModel)
     );
 
+    // Convert from the phone model to the internal model
     SingleDayWeather single_day_weather[NUMBER_OF_DAYS];
     Layer *root_layer = window_get_root_layer(application->main_window);
     for(int i = 0; i < NUMBER_OF_DAYS; i++) {
       PhoneWeatherModel phone_model = forecast_array[i];
-      SingleDayWeather weather = phone_model_to_single_day(phone_model, start_time + (i * SECONDS_PER_DAY));
+      
+      SingleDayWeather weather = phone_model_to_single_day(
+        phone_model, 
+        start_time + (i * SECONDS_PER_DAY),
+        // Needs to be pulling from the application
+        FAHRENHEIT
+      );
       single_day_weather[i] = weather;
     }
 
@@ -108,6 +132,7 @@ static void inbox_received_handler(DictionaryIterator *iterator, void *context) 
       forecast
     );
 
+    ScrollLayer *scrolling_layer = create_weather_scroll_layer(application->main_window);
     scroll_layer_add_child(scrolling_layer, forecast_layer_get_layer(forecast_layer));
     layer_add_child(root_layer, scroll_layer_get_layer(scrolling_layer));
   }
