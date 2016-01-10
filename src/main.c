@@ -1,8 +1,9 @@
 #include <pebble.h>
 #include "single_day_layer.h"
+#include "global_constants.h"
+#include "forecast_layer.h"
+
 #define SECONDS_PER_DAY 86400
-#define NUMBER_OF_FORECAST_DAYS 10
-#define SIZE_OF_FORECAST_DAY 33
 
 enum {
   MESSAGE_TYPE = 0,
@@ -82,29 +83,29 @@ static void inbox_received_handler(DictionaryIterator *iterator, void *context) 
     scroll_layer_set_content_offset(scrolling_layer, GPoint(0, 168), true);
 
     PhoneWeatherModel* forecast_array = (PhoneWeatherModel*) malloc(
-      sizeof(PhoneWeatherModel) * NUMBER_OF_FORECAST_DAYS
+      sizeof(PhoneWeatherModel) * NUMBER_OF_DAYS
     );
 
     memcpy(
       forecast_array, 
       dict_find(iterator, WEATHER_FORECASTS)->value->data, 
-      NUMBER_OF_FORECAST_DAYS * sizeof(PhoneWeatherModel)
+      NUMBER_OF_DAYS * sizeof(PhoneWeatherModel)
     );
 
-    SingleDayWeatherLayer* weather_layers[10];
+    SingleDayWeather single_day_weather[10];
     Layer *root_layer = window_get_root_layer(application->main_window);
-    for(int i = 0; i < NUMBER_OF_FORECAST_DAYS; i++) {
+    for(int i = 0; i < NUMBER_OF_DAYS; i++) {
       PhoneWeatherModel phone_model = forecast_array[i];
       SingleDayWeather weather = phone_model_to_single_day(phone_model, start_time + (i * SECONDS_PER_DAY));
-
-      weather_layers[i] = single_day_weather_layer_create(
-        GRect(0, i * SIZE_OF_FORECAST_DAY, 144, SIZE_OF_FORECAST_DAY), 
-        weather
-      );
-
-      scroll_layer_add_child(scrolling_layer, single_day_weather_layer_get_layer(weather_layers[i]));
+      single_day_weather[i] = weather;
     }
-    
+
+    Forecast forecast;
+    memcpy(forecast.days, single_day_weather, sizeof(SingleDayWeather) * 10);
+
+    ForecastLayer *forecast_layer = forecast_layer_create(GRect(0, 0, 144, 33 * NUMBER_OF_DAYS), forecast);
+
+    scroll_layer_add_child(scrolling_layer, forecast_layer_get_layer(forecast_layer));
     layer_add_child(root_layer, scroll_layer_get_layer(scrolling_layer));
   }
 }
