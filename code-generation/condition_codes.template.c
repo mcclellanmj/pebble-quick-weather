@@ -13,6 +13,25 @@ uint8_t condition_code_to_icon(uint8_t condition_code) {
 	return ERROR_ICON;
 }
 
+const char* condition_code_to_text(uint8_t condition_code) {
+  static const char* lookup[NUM_CONDITION_CODES] = %CONDITION_CODE_TO_TEXT_TABLE%;
+
+  if(condition_code < NUM_CONDITION_CODES) {
+    return lookup[condition_code];
+  }
+
+  return "ERROR";
+}
+
+uint8_t condition_code_to_text_size(uint8_t condition_code) {
+  static const uint8_t lookup[NUM_CONDITION_CODES] = %CONDITION_CODE_TO_TEXT_SIZE_TABLE%;
+
+  if(condition_code < NUM_CONDITION_CODES) {
+    return lookup[condition_code];
+  }
+
+  return 0;
+}
 /*
 uint8_t condition_code_to_string(uint8_t condition_code) {
 	// Not needed yet but likely
