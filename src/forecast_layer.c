@@ -13,12 +13,22 @@ ForecastLayer* forecast_layer_create(GRect frame, Forecast forecast) {
       day
     );
 
+    forecast_layer->single_day_layers[i] = single_day_weather_layer;
     layer_add_child(root_layer, single_day_weather_layer_get_layer(single_day_weather_layer));
   }
 
   forecast_layer->root_layer = root_layer;
 
   return forecast_layer;
+}
+
+void forecast_layer_set_mode(ForecastLayer *forecast_layer, Mode mode) {
+  for(int i = 0; i < NUMBER_OF_DAYS; i++) {
+    SingleDayWeatherLayer *single_day_weather_layer = forecast_layer->single_day_layers[i];
+    single_day_weather_layer_set_mode(single_day_weather_layer, mode);
+
+    layer_mark_dirty(forecast_layer->root_layer);
+  }
 }
 
 void forecast_layer_destroy(ForecastLayer *forecast_layer) {

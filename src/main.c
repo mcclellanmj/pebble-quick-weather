@@ -95,16 +95,14 @@ static void inbox_received_handler(DictionaryIterator *iterator, void *context) 
     send_request();
   }
   
-  // TODO: Break up this area into smaller functions
-  // FIXME: remove repeated calls
   if(request_type == WEATHER_REPORT) {
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Got a weather report");
     time_t start_time = dict_find(iterator, WEATHER_START)->value->int32;
 
     // Load the phone model, which is more optimized for size
-    PhoneWeatherModel forecast_array[NUMBER_OF_DAYS];
+    PhoneWeatherModel phone_model_array[NUMBER_OF_DAYS];
     memcpy(
-      forecast_array, 
+      phone_model_array, 
       dict_find(iterator, WEATHER_FORECASTS)->value->data, 
       NUMBER_OF_DAYS * sizeof(PhoneWeatherModel)
     );
@@ -113,27 +111,29 @@ static void inbox_received_handler(DictionaryIterator *iterator, void *context) 
     SingleDayWeather single_day_weather[NUMBER_OF_DAYS];
     Layer *root_layer = window_get_root_layer(application->main_window);
     for(int i = 0; i < NUMBER_OF_DAYS; i++) {
-      PhoneWeatherModel phone_model = forecast_array[i];
-      
-      SingleDayWeather weather = phone_model_to_single_day(
+      PhoneWeatherModel phone_model = phone_model_array[i];
+
+      single_day_weather[i] = phone_model_to_single_day(
         phone_model, 
         start_time + (i * SECONDS_PER_DAY),
         // Needs to be pulling from the application
         FAHRENHEIT
       );
-      single_day_weather[i] = weather;
     }
 
     Forecast forecast;
     memcpy(forecast.days, single_day_weather, sizeof(SingleDayWeather) * NUMBER_OF_DAYS);
 
+    // Create the forecast layer and add it to a scrolling layer due to the size of it
     ForecastLayer *forecast_layer = forecast_layer_create(
       GRect(0, 0, 144, HEIGHT_OF_DAY * NUMBER_OF_DAYS), 
       forecast
     );
 
+    forecast_layer_set_mode(forecast_layer, TEXT);
     ScrollLayer *scrolling_layer = create_weather_scroll_layer(application->main_window);
     scroll_layer_add_child(scrolling_layer, forecast_layer_get_layer(forecast_layer));
+
     layer_add_child(root_layer, scroll_layer_get_layer(scrolling_layer));
   }
 }

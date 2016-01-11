@@ -26,21 +26,30 @@ SingleDayWeatherLayer* single_day_weather_layer_create(GRect frame, SingleDayWea
   Layer *root_layer = layer_create_with_data(frame, sizeof(SingleDayWeatherLayer));
 
   SingleDayWeatherLayer *single_day_weather_layer = (SingleDayWeatherLayer *) layer_get_data(root_layer);
+
   *single_day_weather_layer = (SingleDayWeatherLayer) {
     .root_layer = root_layer,
     .weather = weather,
-    .temperature_layer = 
-      create_temperature_layer(GRect(12, 8, 50, 30)
-        , weather.high_temperature
-        , weather.low_temperature
-      ),
-    .date_layer = 
-      create_date_layer(GRect(4, 0, 80, 15)
-        , weather.date
-      ),
+    .temperature_layer = create_temperature_layer(
+      GRect(12, 8, 50, 30),
+      weather.high_temperature,
+      weather.low_temperature
+    ),
+    .date_layer = create_date_layer(
+      GRect(4, 0, 80, 15),
+      weather.date
+    ),
+    .description_layer = copying_text_layer_create(
+      GRect(64, 0, 75, 33), 
+      condition_code_to_text(/*weather.forecast_code*/0), 
+      condition_code_to_text_size(weather.forecast_code)
+    ),
     .bitmap = gbitmap_create_with_resource(condition_code_to_icon(weather.forecast_code)),
     .icon_layer = bitmap_layer_create(GRect(100, 1, 33, 33))
   };
+
+  copying_text_layer_set_overflow(single_day_weather_layer->description_layer, GTextOverflowModeFill);
+  copying_text_layer_set_text_alignment(single_day_weather_layer->description_layer, GTextAlignmentRight);
 
   // Set the bitmap layer to the correct icon
   bitmap_layer_set_bitmap(
@@ -52,13 +61,31 @@ SingleDayWeatherLayer* single_day_weather_layer_create(GRect frame, SingleDayWea
 
   layer_add_child(root_layer, copying_text_layer_get_layer(single_day_weather_layer->temperature_layer));
   layer_add_child(root_layer, copying_text_layer_get_layer(single_day_weather_layer->date_layer));
+  layer_add_child(root_layer, copying_text_layer_get_layer(single_day_weather_layer->description_layer));
   layer_add_child(root_layer, bitmap_layer_get_layer(single_day_weather_layer->icon_layer));
+
+  single_day_weather_layer_set_mode(single_day_weather_layer, ICON);
 
   return single_day_weather_layer;
 }
 
 Layer* single_day_weather_layer_get_layer(SingleDayWeatherLayer *single_day_weather_layer) {
   return single_day_weather_layer->root_layer;
+}
+
+void single_day_weather_layer_set_mode(SingleDayWeatherLayer *single_day_weather_layer, Mode mode) {
+  switch(mode) {
+    case TEXT:
+      APP_LOG(APP_LOG_LEVEL_DEBUG, "Mode set to TEXT");
+      layer_set_hidden(bitmap_layer_get_layer(single_day_weather_layer->icon_layer), true);
+      layer_set_hidden(copying_text_layer_get_layer(single_day_weather_layer->description_layer), false);
+      break;
+    case ICON:
+      APP_LOG(APP_LOG_LEVEL_DEBUG, "Mode set to ICON");
+      layer_set_hidden(bitmap_layer_get_layer(single_day_weather_layer->icon_layer), false);
+      layer_set_hidden(copying_text_layer_get_layer(single_day_weather_layer->description_layer), true);
+      break;
+  }
 }
 
 void single_day_weather_layer_destroy(SingleDayWeatherLayer *single_day_weather_layer) {

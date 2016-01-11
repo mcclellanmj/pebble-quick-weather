@@ -12,5 +12,6 @@ typedef struct {
 } ForecastLayer;
 
 ForecastLayer* forecast_layer_create(GRect frame, Forecast weather);
+void forecast_layer_set_mode(ForecastLayer *forecast_layer, Mode mode);
 void forecast_layer_destroy(ForecastLayer *forecast_layer);
 Layer* forecast_layer_get_layer(ForecastLayer *forecast_layer);
