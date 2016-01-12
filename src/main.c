@@ -34,6 +34,8 @@ typedef struct {
   Window *main_window;
 } Application;
 
+static const Mode INITIAL_MODE = ICON;
+
 static bool send_request() {
   APP_LOG(APP_LOG_LEVEL_DEBUG, "Sending the Fetch Weather command to the phone");
   
@@ -70,11 +72,34 @@ static SingleDayWeather phone_model_to_single_day(PhoneWeatherModel phone_model,
   };
 }
 
-static ScrollLayer* create_weather_scroll_layer(Window *main_window) {
+// FIXME: WARNING DRAGONS AHEAD, function varies from call to call with the same inputs :(
+static void middle_click(ClickRecognizerRef recognizer, void *context) {
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "Got a click");
+  ForecastLayer *forecast_layer = (ForecastLayer *) context;
+
+  static Mode mode = INITIAL_MODE;
+  Mode next_mode = mode == ICON ? TEXT : ICON;
+  mode = next_mode;
+
+  forecast_layer_set_mode(forecast_layer, next_mode);
+}
+
+void main_click_provider(ClickRecognizerRef recognizer) {
+  window_single_click_subscribe(BUTTON_ID_SELECT, middle_click);
+}
+
+static ScrollLayer* create_weather_scroll_layer(Window *main_window, void *context) {
     ScrollLayer *scrolling_layer = scroll_layer_create(
       GRect(0, 0, 144, 168)
     );
 
+    scroll_layer_set_callbacks(
+      scrolling_layer, 
+      (ScrollLayerCallbacks) {
+        .click_config_provider = main_click_provider
+      }
+    );
+    scroll_layer_set_context(scrolling_layer, context);
     scroll_layer_set_click_config_onto_window(scrolling_layer, main_window);
     scroll_layer_set_paging(scrolling_layer, true);
     scroll_layer_set_content_size(scrolling_layer, GSize(144, 330));
@@ -130,8 +155,9 @@ static void inbox_received_handler(DictionaryIterator *iterator, void *context) 
       forecast
     );
 
-    forecast_layer_set_mode(forecast_layer, TEXT);
-    ScrollLayer *scrolling_layer = create_weather_scroll_layer(application->main_window);
+    forecast_layer_set_mode(forecast_layer, INITIAL_MODE);
+    window_set_click_config_provider_with_context(application->main_window, main_click_provider, (void *)forecast_layer);
+    ScrollLayer *scrolling_layer = create_weather_scroll_layer(application->main_window, forecast_layer);
     scroll_layer_add_child(scrolling_layer, forecast_layer_get_layer(forecast_layer));
 
     layer_add_child(root_layer, scroll_layer_get_layer(scrolling_layer));
