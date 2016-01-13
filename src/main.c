@@ -32,6 +32,8 @@ typedef struct {
 
 typedef struct {
   Window *main_window;
+  CopyingTextLayer *loading_layer;
+  ScrollingForecastLayer *scrolling_forecast_layer;
 } Application;
 
 static const Mode INITIAL_MODE = ICON;
@@ -185,6 +187,7 @@ static void initial_window_load(Window* window) {
 }
 
 static void initial_window_unload(Window* window) {
+  Application *application = (Application *) window_get_user_data(window);
 
 }
 
