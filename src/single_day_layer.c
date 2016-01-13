@@ -40,8 +40,8 @@ SingleDayWeatherLayer* single_day_weather_layer_create(GRect frame, SingleDayWea
       weather.date
     ),
     .description_layer = copying_text_layer_create(
-      GRect(64, 0, 75, 33), 
-      condition_code_to_text(/*weather.forecast_code*/0), 
+      GRect(64, 0, 70, 33), 
+      condition_code_to_text(weather.forecast_code), 
       condition_code_to_text_size(weather.forecast_code)
     ),
     .bitmap = gbitmap_create_with_resource(condition_code_to_icon(weather.forecast_code)),

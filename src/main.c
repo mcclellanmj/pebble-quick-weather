@@ -156,7 +156,6 @@ static void inbox_received_handler(DictionaryIterator *iterator, void *context) 
     );
 
     forecast_layer_set_mode(forecast_layer, INITIAL_MODE);
-    window_set_click_config_provider_with_context(application->main_window, main_click_provider, (void *)forecast_layer);
     ScrollLayer *scrolling_layer = create_weather_scroll_layer(application->main_window, forecast_layer);
     scroll_layer_add_child(scrolling_layer, forecast_layer_get_layer(forecast_layer));
 
