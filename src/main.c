@@ -120,46 +120,14 @@ static void inbox_received_handler(DictionaryIterator *iterator, void *context) 
     );
 
     scrolling_forecast_layer_set_click_on_window(scrolling_forecast_layer, application->main_window);
-    
+
     Layer *root_layer = window_get_root_layer(application->main_window);
     layer_add_child(root_layer, scrolling_forecast_layer_get_layer(scrolling_forecast_layer));
   }
 }
 
-static void draw_command(Layer *layer, GContext *context) {
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "drawing initial window");
-  GDrawCommandImage **image = (GDrawCommandImage **) layer_get_data(layer);
-
-  gdraw_command_image_get_bounds_size(*image);
-  gdraw_command_image_draw(context, *image, GPoint(0, 0));
-}
-
-static void initial_window_load(Window* window) {
-  Layer *root_layer = window_get_root_layer(window);
-
-  Layer *happy_layer = layer_create_with_data(layer_get_frame(root_layer), sizeof(GDrawCommandImage **));
-  GDrawCommandImage *happy_watch_command = gdraw_command_image_create_with_resource(RESOURCE_ID_HAPPY_WATCH);
-
-  GDrawCommandImage **data = (GDrawCommandImage **) layer_get_data(happy_layer);
-  *data = happy_watch_command;
-
-  layer_set_update_proc(happy_layer, draw_command);
-  layer_add_child(root_layer, happy_layer);
-}
-
-static void initial_window_unload(Window* window) {
-  // TODO: Destroy some stuff
-}
-
 void handle_init(Application *application) {
   application->main_window = window_create();
-
-  /*
-  window_set_window_handlers(application->main_window, (WindowHandlers) {
-    .load = initial_window_load,
-    .unload = initial_window_unload
-  });
-  */
 
   app_message_register_inbox_received(inbox_received_handler);
   app_message_set_context(application);
