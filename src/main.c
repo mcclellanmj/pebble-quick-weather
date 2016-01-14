@@ -1,7 +1,7 @@
 #include <pebble.h>
 #include "single_day_layer.h"
 #include "global_constants.h"
-#include "forecast_layer.h"
+#include "scrolling_forecast_layer.h"
 #include "util.h"
 
 #define SECONDS_PER_DAY 86400
@@ -32,11 +32,9 @@ typedef struct {
 
 typedef struct {
   Window *main_window;
-  CopyingTextLayer *loading_layer;
   ScrollingForecastLayer *scrolling_forecast_layer;
 } Application;
 
-static const Mode INITIAL_MODE = ICON;
 
 static bool send_request() {
   APP_LOG(APP_LOG_LEVEL_DEBUG, "Sending the Fetch Weather command to the phone");
@@ -74,42 +72,6 @@ static SingleDayWeather phone_model_to_single_day(PhoneWeatherModel phone_model,
   };
 }
 
-// FIXME: WARNING DRAGONS AHEAD, function varies from call to call with the same inputs :(
-static void middle_click(ClickRecognizerRef recognizer, void *context) {
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "Got a click");
-  ForecastLayer *forecast_layer = (ForecastLayer *) context;
-
-  static Mode mode = INITIAL_MODE;
-  Mode next_mode = mode == ICON ? TEXT : ICON;
-  mode = next_mode;
-
-  forecast_layer_set_mode(forecast_layer, next_mode);
-}
-
-void main_click_provider(ClickRecognizerRef recognizer) {
-  window_single_click_subscribe(BUTTON_ID_SELECT, middle_click);
-}
-
-static ScrollLayer* create_weather_scroll_layer(Window *main_window, void *context) {
-    ScrollLayer *scrolling_layer = scroll_layer_create(
-      GRect(0, 0, 144, 168)
-    );
-
-    scroll_layer_set_callbacks(
-      scrolling_layer, 
-      (ScrollLayerCallbacks) {
-        .click_config_provider = main_click_provider
-      }
-    );
-    scroll_layer_set_context(scrolling_layer, context);
-    scroll_layer_set_click_config_onto_window(scrolling_layer, main_window);
-    scroll_layer_set_paging(scrolling_layer, true);
-    scroll_layer_set_content_size(scrolling_layer, GSize(144, 330));
-    scroll_layer_set_content_offset(scrolling_layer, GPoint(0, 168), true);
-
-    return scrolling_layer;
-}
-
 static void inbox_received_handler(DictionaryIterator *iterator, void *context) {
   Application *application = (Application *) context;
 
@@ -136,7 +98,6 @@ static void inbox_received_handler(DictionaryIterator *iterator, void *context) 
 
     // Convert from the phone model to the internal model
     SingleDayWeather single_day_weather[NUMBER_OF_DAYS];
-    Layer *root_layer = window_get_root_layer(application->main_window);
     for(int i = 0; i < NUMBER_OF_DAYS; i++) {
       PhoneWeatherModel phone_model = phone_model_array[i];
 
@@ -151,17 +112,17 @@ static void inbox_received_handler(DictionaryIterator *iterator, void *context) 
     Forecast forecast;
     memcpy(forecast.days, single_day_weather, sizeof(SingleDayWeather) * NUMBER_OF_DAYS);
 
-    // Create the forecast layer and add it to a scrolling layer due to the size of it
-    ForecastLayer *forecast_layer = forecast_layer_create(
-      GRect(0, 0, 144, HEIGHT_OF_DAY * NUMBER_OF_DAYS), 
+    // TODO: Need to move the scrolling layer setup to when the window first gets created
+    // and just give it a not valid forecast that doesn't draw
+    ScrollingForecastLayer *scrolling_forecast_layer = scrolling_forecast_layer_create(
+      GRect(0, 0, 144, 168),
       forecast
     );
 
-    forecast_layer_set_mode(forecast_layer, INITIAL_MODE);
-    ScrollLayer *scrolling_layer = create_weather_scroll_layer(application->main_window, forecast_layer);
-    scroll_layer_add_child(scrolling_layer, forecast_layer_get_layer(forecast_layer));
-
-    layer_add_child(root_layer, scroll_layer_get_layer(scrolling_layer));
+    scrolling_forecast_layer_set_click_on_window(scrolling_forecast_layer, application->main_window);
+    
+    Layer *root_layer = window_get_root_layer(application->main_window);
+    layer_add_child(root_layer, scrolling_forecast_layer_get_layer(scrolling_forecast_layer));
   }
 }
 
@@ -187,8 +148,7 @@ static void initial_window_load(Window* window) {
 }
 
 static void initial_window_unload(Window* window) {
-  Application *application = (Application *) window_get_user_data(window);
-
+  // TODO: Destroy some stuff
 }
 
 void handle_init(Application *application) {
