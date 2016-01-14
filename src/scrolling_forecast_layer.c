@@ -2,8 +2,8 @@
 static const Mode INITIAL_MODE = ICON;
 
 static void middle_click(ClickRecognizerRef recognizer, void *context) {
-  ScrollingForecastLayer *scrolling_forecast_layer = (ScrollingForecastLayer *)context;
   APP_LOG(APP_LOG_LEVEL_DEBUG, "Got a click");
+  ScrollingForecastLayer *scrolling_forecast_layer = (ScrollingForecastLayer *)context;
 
   scrolling_forecast_layer->mode = scrolling_forecast_layer->mode == ICON ? TEXT : ICON;
 
@@ -14,7 +14,7 @@ static void click_provider(ClickRecognizerRef recognizer) {
   window_single_click_subscribe(BUTTON_ID_SELECT, middle_click);
 }
 
-static ScrollLayer* create_scrolling_layer(GRect frame, void *context) {
+static ScrollLayer* create_scrolling_layer(GRect frame) {
   ScrollLayer *scrolling_layer = scroll_layer_create(
     frame
   );
@@ -33,8 +33,8 @@ void scrolling_forecast_layer_set_click_on_window(ScrollingForecastLayer *scroll
       .click_config_provider = click_provider
     }
   );
-  scroll_layer_set_context(scrolling_forecast_layer->scroll_layer, scrolling_forecast_layer);
 
+  scroll_layer_set_context(scrolling_forecast_layer->scroll_layer, scrolling_forecast_layer);
   scroll_layer_set_click_config_onto_window(scrolling_forecast_layer->scroll_layer, window);
 }
 
@@ -42,7 +42,7 @@ ScrollingForecastLayer* scrolling_forecast_layer_create(GRect frame, Forecast fo
   ScrollingForecastLayer *scrolling_forecast_layer = (ScrollingForecastLayer *) malloc(sizeof(ScrollingForecastLayer));
   scrolling_forecast_layer->mode = INITIAL_MODE;
 
-  ScrollLayer *scroll_layer = scroll_layer_create(frame);
+  ScrollLayer *scroll_layer = create_scrolling_layer(frame);
   scrolling_forecast_layer->scroll_layer = scroll_layer;
 
   for(int i = 0; i < NUMBER_OF_DAYS; i++) {
