@@ -76,12 +76,10 @@ Layer* single_day_weather_layer_get_layer(SingleDayWeatherLayer *single_day_weat
 void single_day_weather_layer_set_mode(SingleDayWeatherLayer *single_day_weather_layer, Mode mode) {
   switch(mode) {
     case TEXT:
-      APP_LOG(APP_LOG_LEVEL_DEBUG, "Mode set to TEXT");
       layer_set_hidden(bitmap_layer_get_layer(single_day_weather_layer->icon_layer), true);
       layer_set_hidden(copying_text_layer_get_layer(single_day_weather_layer->description_layer), false);
       break;
     case ICON:
-      APP_LOG(APP_LOG_LEVEL_DEBUG, "Mode set to ICON");
       layer_set_hidden(bitmap_layer_get_layer(single_day_weather_layer->icon_layer), false);
       layer_set_hidden(copying_text_layer_get_layer(single_day_weather_layer->description_layer), true);
       break;
@@ -95,5 +93,4 @@ void single_day_weather_layer_destroy(SingleDayWeatherLayer *single_day_weather_
   bitmap_layer_destroy(single_day_weather_layer->icon_layer);
 
   layer_destroy(single_day_weather_layer->root_layer);
-  free(single_day_weather_layer);
 }

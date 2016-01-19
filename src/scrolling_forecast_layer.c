@@ -2,7 +2,6 @@
 static const Mode INITIAL_MODE = ICON;
 
 static void middle_click(ClickRecognizerRef recognizer, void *context) {
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "Got a click");
   ScrollingForecastLayer *scrolling_forecast_layer = (ScrollingForecastLayer *)context;
 
   scrolling_forecast_layer->mode = scrolling_forecast_layer->mode == ICON ? TEXT : ICON;
@@ -70,12 +69,10 @@ void scrolling_forecast_layer_set_mode(ScrollingForecastLayer *scrolling_forecas
 void scrolling_forecast_layer_destroy(ScrollingForecastLayer *scrolling_forecast_layer) {
   for(int i = 0; i < NUMBER_OF_DAYS; i++) {
     SingleDayWeatherLayer *single_day_weather_layer = scrolling_forecast_layer->single_day_layers[i];
-
     single_day_weather_layer_destroy(single_day_weather_layer);
   }
 
   scroll_layer_destroy(scrolling_forecast_layer->scroll_layer);
-  free(scrolling_forecast_layer);
 }
 
 Layer* scrolling_forecast_layer_get_layer(ScrollingForecastLayer *scrolling_forecast_layer) {

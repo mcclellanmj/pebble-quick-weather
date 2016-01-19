@@ -112,37 +112,55 @@ static void inbox_received_handler(DictionaryIterator *iterator, void *context) 
     Forecast forecast;
     memcpy(forecast.days, single_day_weather, sizeof(SingleDayWeather) * NUMBER_OF_DAYS);
 
-    // TODO: Need to move the scrolling layer setup to when the window first gets created
-    // and just give it a not valid forecast that doesn't draw
     ScrollingForecastLayer *scrolling_forecast_layer = scrolling_forecast_layer_create(
       GRect(0, 0, 144, 168),
       forecast
     );
 
     scrolling_forecast_layer_set_click_on_window(scrolling_forecast_layer, application->main_window);
+    application->scrolling_forecast_layer = scrolling_forecast_layer;
 
     Layer *root_layer = window_get_root_layer(application->main_window);
     layer_add_child(root_layer, scrolling_forecast_layer_get_layer(scrolling_forecast_layer));
   }
 }
 
+static void main_load(Window* window) {
+  // Application *application = (Application *) window_get_user_data(window);
+}
+
+static void main_unload(Window* window) {
+
+}
+
 void handle_init(Application *application) {
   application->main_window = window_create();
+  window_set_window_handlers(application->main_window, (WindowHandlers) {
+    .load = main_load,
+    .unload = main_unload
+  });
 
   app_message_register_inbox_received(inbox_received_handler);
   app_message_set_context(application);
   app_message_open(531, 9);
 
+  window_set_user_data(application->main_window, application);
   window_set_background_color(application->main_window, GColorBlack);
   window_stack_push(application->main_window, true);
 }
 
 void handle_deinit(Application *application) {
+  if(application->scrolling_forecast_layer != NULL) {
+    scrolling_forecast_layer_destroy(application->scrolling_forecast_layer);
+    free(application->scrolling_forecast_layer);
+  }
   window_destroy(application->main_window);
 }
 
 int main(void) {
-  Application application;
+  Application application = (Application) {
+    .scrolling_forecast_layer = NULL
+  };
   handle_init(&application);
   app_event_loop();
   handle_deinit(&application);
