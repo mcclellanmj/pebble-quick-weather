@@ -2,6 +2,7 @@
 #include "single_day_layer.h"
 #include "global_constants.h"
 #include "scrolling_forecast_layer.h"
+#include "terminal_layer.h"
 #include "util.h"
 
 #define SECONDS_PER_DAY 86400
@@ -33,6 +34,7 @@ typedef struct {
 typedef struct {
   Window *main_window;
   ScrollingForecastLayer *scrolling_forecast_layer;
+  TerminalLayer *terminal_layer;
 } Application;
 
 
@@ -126,7 +128,13 @@ static void inbox_received_handler(DictionaryIterator *iterator, void *context) 
 }
 
 static void main_load(Window* window) {
-  // Application *application = (Application *) window_get_user_data(window);
+  Application *application = (Application *) window_get_user_data(window);
+  application->terminal_layer = terminal_layer_create(
+    GRect(0, 0, 144, 168), 
+    10
+  );
+
+  terminal_layer_output(application->terminal_layer, "Loading window");
 }
 
 static void main_unload(Window* window) {
