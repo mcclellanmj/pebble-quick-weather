@@ -103,6 +103,11 @@ static void inbox_received_handler(DictionaryIterator *iterator, void *context) 
   if(request_type == WEATHER_REPORT) {
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Got a weather report");
     terminal_layer_output(application->terminal_layer, "Got Weather");
+
+    layer_set_hidden(
+      terminal_layer_get_layer(application->terminal_layer), 
+      true
+    );
     time_t start_time = dict_find(iterator, WEATHER_START)->value->int32;
 
     // Load the phone model, which is more optimized for size
@@ -142,6 +147,13 @@ static void inbox_received_handler(DictionaryIterator *iterator, void *context) 
   }
 }
 
+static void report_memory(void *data) {
+  char output[50];
+  snprintf(output, 50, "memusage [%d]", heap_bytes_used());
+  APP_LOG(APP_LOG_LEVEL_DEBUG, output);
+  app_timer_register(5000, report_memory, NULL);
+}
+
 static void main_load(Window* window) {
   Application *application = (Application *) window_get_user_data(window);
   application->terminal_layer = terminal_layer_create(
@@ -161,17 +173,14 @@ static void main_unload(Window* window) {
 }
 
 void handle_init(Application *application) {
+  //love you
   application->main_window = window_create();
   application->terminal_layer = terminal_layer_create(
     GRect(0, 0, 144, 168), 
     255
   );
 
-  terminal_layer_output(application->terminal_layer, "Window loading");
-  layer_add_child(
-    window_get_root_layer(application->main_window), 
-    terminal_layer_get_layer(application->terminal_layer)
-  );
+  app_timer_register(5000, report_memory, NULL);
   window_set_window_handlers(application->main_window, (WindowHandlers) {
     .load = main_load,
     .unload = main_unload
@@ -189,6 +198,7 @@ void handle_init(Application *application) {
 void handle_deinit(Application *application) {
   if(application->scrolling_forecast_layer != NULL) {
     scrolling_forecast_layer_destroy(application->scrolling_forecast_layer);
+    terminal_layer_destroy(application->terminal_layer);
     free(application->scrolling_forecast_layer);
   }
   window_destroy(application->main_window);

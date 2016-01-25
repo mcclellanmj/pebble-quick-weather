@@ -4,8 +4,7 @@
 typedef struct {
   Layer *root_layer;
   TextLayer *text_layer;
-  uint8_t num_characters;
-  uint8_t max_characters;
+  uint8_t max_bytes;
   uint8_t max_lines;
   uint8_t num_lines;
   char *characters;

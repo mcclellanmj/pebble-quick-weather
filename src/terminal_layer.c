@@ -10,10 +10,9 @@ TerminalLayer* terminal_layer_create(GRect frame, uint8_t max_characters) {
   *terminal_layer = (TerminalLayer) {
     .root_layer = root_layer,
     .text_layer = text_layer_create(frame),
-    .max_characters = 255,
     .max_lines = 10,
+    .max_bytes = 0,
     .characters = (char *) malloc(sizeof(char) * max_characters),
-    .num_characters = 0,
     .num_lines = 0
   };
 
@@ -44,7 +43,7 @@ void terminal_layer_output(TerminalLayer *terminal_layer, char *output) {
   APP_LOG(APP_LOG_LEVEL_DEBUG, "current line count: [%d]", terminal_layer->num_lines);
 
   while(terminal_layer->num_lines > terminal_layer->max_lines) {
-    delete_line(terminal_layer->characters, terminal_layer->max_characters);
+    delete_line(terminal_layer->characters);
     terminal_layer->num_lines--;
   }
 

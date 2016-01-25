@@ -10,7 +10,7 @@ char* copy_string(const char* source, size_t max) {
   return destination;
 }
 
-void delete_line(char* lines, uint8_t max_characters) {
+void delete_line(char* lines) {
   char* new_line = strchr(lines, '\n') + sizeof(char);
 
   if(new_line == NULL) {
