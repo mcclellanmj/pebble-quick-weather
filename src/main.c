@@ -74,6 +74,12 @@ static SingleDayWeather phone_model_to_single_day(PhoneWeatherModel phone_model,
   };
 }
 
+static void retry_request(void *data) {
+  Application *application = (Application *) data;
+  terminal_layer_output(application->terminal_layer, "Retrying weather");
+  send_request();
+}
+
 static void inbox_received_handler(DictionaryIterator *iterator, void *context) {
   Application *application = (Application *) context;
 
@@ -83,11 +89,20 @@ static void inbox_received_handler(DictionaryIterator *iterator, void *context) 
   APP_LOG(APP_LOG_LEVEL_DEBUG, "Got a message with request type [%d]", request_type);
   
   if(request_type == PHONE_READY) {
+    terminal_layer_output(application->terminal_layer, "Phone Ready");
     send_request();
+    terminal_layer_output(application->terminal_layer, "Requested weather");
+  }
+
+  if(request_type == WEATHER_FAILED) {
+    terminal_layer_output(application->terminal_layer, "Request failed");
+    app_timer_register(30000, retry_request, application);
+    terminal_layer_output(application->terminal_layer, "Retry in 30s");
   }
   
   if(request_type == WEATHER_REPORT) {
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Got a weather report");
+    terminal_layer_output(application->terminal_layer, "Got Weather");
     time_t start_time = dict_find(iterator, WEATHER_START)->value->int32;
 
     // Load the phone model, which is more optimized for size
@@ -131,10 +146,14 @@ static void main_load(Window* window) {
   Application *application = (Application *) window_get_user_data(window);
   application->terminal_layer = terminal_layer_create(
     GRect(0, 0, 144, 168), 
-    10
+    255
   );
 
-  terminal_layer_output(application->terminal_layer, "Loading window");
+  terminal_layer_output(application->terminal_layer, "Window loading");
+  layer_add_child(
+    window_get_root_layer(application->main_window), 
+    terminal_layer_get_layer(application->terminal_layer)
+  );
 }
 
 static void main_unload(Window* window) {
@@ -143,6 +162,16 @@ static void main_unload(Window* window) {
 
 void handle_init(Application *application) {
   application->main_window = window_create();
+  application->terminal_layer = terminal_layer_create(
+    GRect(0, 0, 144, 168), 
+    255
+  );
+
+  terminal_layer_output(application->terminal_layer, "Window loading");
+  layer_add_child(
+    window_get_root_layer(application->main_window), 
+    terminal_layer_get_layer(application->terminal_layer)
+  );
   window_set_window_handlers(application->main_window, (WindowHandlers) {
     .load = main_load,
     .unload = main_unload

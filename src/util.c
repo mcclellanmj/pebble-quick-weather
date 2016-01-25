@@ -10,6 +10,18 @@ char* copy_string(const char* source, size_t max) {
   return destination;
 }
 
+void delete_line(char* lines, uint8_t max_characters) {
+  char* new_line = strchr(lines, '\n') + sizeof(char);
+
+  if(new_line == NULL) {
+    return;
+  }
+
+  int length = strlen(new_line);
+  memmove(lines, new_line, length);
+  lines[length] = '\0';
+}
+
 int16_t celsius_to_fahrenheit(int8_t celsius) {
   float converted = (celsius * 1.8) + 32;
   return (int16_t) converted;

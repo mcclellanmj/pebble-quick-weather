@@ -8,8 +8,9 @@ typedef struct {
 } MinMaxResult;
 
 char* copy_string(const char* source, size_t max);
+void delete_line(char* lines, uint8_t max_characters);
 MinMaxResult int16_min_max(const int16_t *array, size_t num_elements);
 uint16_t scale_length(uint16_t max_size, float percentage);
 uint16_t scale_length_using_int(uint16_t max_size, uint8_t percentage);
-GPoint gpoint_add(const GPoint *x, const GPoint *y);
 int16_t celsius_to_fahrenheit(int8_t celsius);
+void delete_line(char* lines, uint8_t max_characters);

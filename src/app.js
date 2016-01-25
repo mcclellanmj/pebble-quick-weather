@@ -210,6 +210,9 @@ var Weather = (function() {
   
   self.weatherFailed = function(error) {
     console.log(error);
+    Pebble.sendAppMessage({
+      "MESSAGE_TYPE" : ByteConversions.toInt8ByteArray(Constants.MessageTypes.WEATHER_FAILED)
+    });
   };
   
   self.retrieve = function(gpsResults) {
@@ -234,7 +237,7 @@ var MessageHandler = (function() {
     
     if(messageType === Constants.MessageTypes.FETCH_WEATHER) {
       console.log("Start fetching the weather");
-      navigator.geolocation.getCurrentPosition(Weather.retrieve, console.log, Constants.LocationOptions);
+      navigator.geolocation.getCurrentPosition(Weather.retrieve, Weather.weatherFailed, Constants.LocationOptions);
     } else {
       console.log("Received unknown message type of [" + messageType + "]");
     }
@@ -259,5 +262,3 @@ Pebble.addEventListener('appmessage', function(e) {
     MessageHandler.handleMessage(msg);
   }
 );
-
-// navigator.geolocation.getCurrentPosition(Weather.retrieve, console.log, Constants.LocationOptions);
