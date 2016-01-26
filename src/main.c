@@ -84,10 +84,10 @@ static void retry_request(void *data) {
 static void do_retry(Application *application) {
   static int retry = 30000;
 
-  app_timer_register(30000, retry_request, application);
+  app_timer_register(retry, retry_request, application);
 
   char buffer[16];
-  snprintf(buffer, 16, "Retry in [%d]s", retry / 1000);
+  snprintf(buffer, 16, "Retry in %ds", retry / 1000);
   terminal_layer_output(application->terminal_layer, buffer);
 
   if(retry < 120000) {
