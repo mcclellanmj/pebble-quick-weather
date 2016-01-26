@@ -47,7 +47,7 @@ void terminal_layer_output(TerminalLayer *terminal_layer, char *output) {
     terminal_layer->num_lines--;
   }
 
-  strcat(terminal_layer->characters, "> ");
+  strcat(terminal_layer->characters, " > ");
   strcat(terminal_layer->characters, output);
   strcat(terminal_layer->characters, "\n");
   terminal_layer->num_lines++;

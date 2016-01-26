@@ -10,7 +10,8 @@ var Constants = {
     "PHONE_READY" : 0,
     "WEATHER_REPORT" : 1,
     "FETCH_WEATHER" : 2,
-    "WEATHER_FAILED" : 3
+    "WEATHER_FAILED" : 3,
+    "LOCATION_FAILED" : 4
   },
   "LocationOptions" : {
     "enableHighAccuracy" : false, 
@@ -228,6 +229,21 @@ var Weather = (function() {
   };
 })();
 
+var GPS = (function() {
+  var self = {};
+
+  self.failed = function(error) {
+    console.log(error);
+    Pebble.sendAppMessage({
+      "MESSAGE_TYPE" : ByteConversions.toInt8ByteArray(Constants.MessageTypes.LOCATION_FAILED)
+    });
+  };
+
+  return {
+    'failed' : self.failed
+  };
+})();
+
 var MessageHandler = (function() {
   var self = {};
   
@@ -237,7 +253,7 @@ var MessageHandler = (function() {
     
     if(messageType === Constants.MessageTypes.FETCH_WEATHER) {
       console.log("Start fetching the weather");
-      navigator.geolocation.getCurrentPosition(Weather.retrieve, Weather.weatherFailed, Constants.LocationOptions);
+      navigator.geolocation.getCurrentPosition(Weather.retrieve, GPS.failed, Constants.LocationOptions);
     } else {
       console.log("Received unknown message type of [" + messageType + "]");
     }

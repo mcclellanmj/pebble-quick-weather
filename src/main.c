@@ -22,7 +22,8 @@ enum {
   PHONE_READY = 0,
   WEATHER_REPORT = 1,
   FETCH_WEATHER = 2,
-  WEATHER_FAILED = 3
+  WEATHER_FAILED = 3,
+  LOCATION_FAILED = 4
 };
 
 typedef struct {
@@ -69,8 +70,8 @@ static SingleDayWeather phone_model_to_single_day(PhoneWeatherModel phone_model,
     .valid = true,
     .date = date,
     .forecast_code = phone_model.forecast_code,
-    .high_temperature = convert_to_unit(phone_model.high_temperature, FAHRENHEIT),
-    .low_temperature = convert_to_unit(phone_model.low_temperature, FAHRENHEIT)
+    .high_temperature = convert_to_unit(phone_model.high_temperature, unit),
+    .low_temperature = convert_to_unit(phone_model.low_temperature, unit)
   };
 }
 
@@ -78,6 +79,20 @@ static void retry_request(void *data) {
   Application *application = (Application *) data;
   terminal_layer_output(application->terminal_layer, "Retrying weather");
   send_request();
+}
+
+static void do_retry(Application *application) {
+  static int retry = 30000;
+
+  app_timer_register(30000, retry_request, application);
+
+  char buffer[16];
+  snprintf(buffer, 16, "Retry in [%d]s", retry / 1000);
+  terminal_layer_output(application->terminal_layer, buffer);
+
+  if(retry < 120000) {
+    retry = retry * 2;
+  }
 }
 
 static void inbox_received_handler(DictionaryIterator *iterator, void *context) {
@@ -94,10 +109,14 @@ static void inbox_received_handler(DictionaryIterator *iterator, void *context) 
     terminal_layer_output(application->terminal_layer, "Requested weather");
   }
 
+  if(request_type == LOCATION_FAILED) {
+    terminal_layer_output(application->terminal_layer, "GPS failed");
+    do_retry(application);
+  }
+
   if(request_type == WEATHER_FAILED) {
     terminal_layer_output(application->terminal_layer, "Request failed");
-    app_timer_register(30000, retry_request, application);
-    terminal_layer_output(application->terminal_layer, "Retry in 30s");
+    do_retry(application);
   }
   
   if(request_type == WEATHER_REPORT) {
@@ -143,13 +162,14 @@ static void inbox_received_handler(DictionaryIterator *iterator, void *context) 
     application->scrolling_forecast_layer = scrolling_forecast_layer;
 
     Layer *root_layer = window_get_root_layer(application->main_window);
+    layer_mark_dirty(root_layer);
     layer_add_child(root_layer, scrolling_forecast_layer_get_layer(scrolling_forecast_layer));
   }
 }
 
 static void report_memory(void *data) {
-  char output[50];
-  snprintf(output, 50, "memusage [%d]", heap_bytes_used());
+  char output[20];
+  snprintf(output, 20, "memusage [%d]", heap_bytes_used());
   APP_LOG(APP_LOG_LEVEL_DEBUG, output);
   app_timer_register(5000, report_memory, NULL);
 }
@@ -188,7 +208,7 @@ void handle_init(Application *application) {
 
   app_message_register_inbox_received(inbox_received_handler);
   app_message_set_context(application);
-  app_message_open(531, 9);
+  app_message_open(431, 9);
 
   window_set_user_data(application->main_window, application);
   window_set_background_color(application->main_window, GColorBlack);

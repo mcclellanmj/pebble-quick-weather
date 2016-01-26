@@ -7,6 +7,7 @@ static void middle_click(ClickRecognizerRef recognizer, void *context) {
   scrolling_forecast_layer->mode = scrolling_forecast_layer->mode == ICON ? TEXT : ICON;
 
   scrolling_forecast_layer_set_mode(scrolling_forecast_layer, scrolling_forecast_layer->mode);
+  layer_mark_dirty(scrolling_forecast_layer_get_layer(scrolling_forecast_layer));
 }
 
 static void click_provider(ClickRecognizerRef recognizer) {
@@ -14,9 +15,7 @@ static void click_provider(ClickRecognizerRef recognizer) {
 }
 
 static ScrollLayer* create_scrolling_layer(GRect frame) {
-  ScrollLayer *scrolling_layer = scroll_layer_create(
-    frame
-  );
+  ScrollLayer *scrolling_layer = scroll_layer_create(frame);
 
   scroll_layer_set_paging(scrolling_layer, true);
   scroll_layer_set_content_size(scrolling_layer, GSize(frame.size.w, NUMBER_OF_DAYS * HEIGHT_OF_DAY));
