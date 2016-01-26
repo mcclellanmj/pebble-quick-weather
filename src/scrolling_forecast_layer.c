@@ -28,6 +28,23 @@ static ScrollLayer* create_scrolling_layer(GRect frame) {
   return scrolling_layer;
 }
 
+static void additional_drawing(struct Layer *layer, GContext *ctx)  {
+  graphics_context_set_fill_color(ctx, GColorLightGray);
+  graphics_fill_rect(ctx, GRect(140, (168/2) - 8, 15, 16), 2, GCornersAll);
+
+  ScrollingForecastLayer *scrolling_forecast_layer = (ScrollingForecastLayer *) layer_get_data(layer);
+
+  GPoint offset = scroll_layer_get_content_offset(scrolling_forecast_layer->scroll_layer);
+
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "Current offset = (%d,%d)", offset.x, offset.y);
+
+  if(offset.y == 0) {
+    // draw up arrow
+  } else {
+    // draw down array
+  }
+}
+
 void scrolling_forecast_layer_set_click_on_window(ScrollingForecastLayer *scrolling_forecast_layer, Window *window) {
   scroll_layer_set_callbacks(
     scrolling_forecast_layer->scroll_layer, 
@@ -42,6 +59,7 @@ void scrolling_forecast_layer_set_click_on_window(ScrollingForecastLayer *scroll
 
 ScrollingForecastLayer* scrolling_forecast_layer_create(GRect frame, Forecast forecast) {
   Layer *root_layer = layer_create_with_data(frame, sizeof(ScrollingForecastLayer));
+  layer_set_update_proc(root_layer, additional_drawing);
 
   ScrollingForecastLayer *scrolling_forecast_layer = (ScrollingForecastLayer *) layer_get_data(root_layer);
   scrolling_forecast_layer->root_layer = root_layer;
