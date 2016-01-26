@@ -7,7 +7,8 @@ typedef struct {
 } Forecast;
 
 typedef struct {
-  ScrollLayer* scroll_layer;
+  Layer *root_layer;
+  ScrollLayer *scroll_layer;
   SingleDayWeatherLayer *single_day_layers[NUMBER_OF_DAYS];
   Mode mode;
 } ScrollingForecastLayer;
