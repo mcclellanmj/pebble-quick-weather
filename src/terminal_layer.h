@@ -11,6 +11,6 @@ typedef struct {
 } TerminalLayer;
 
 TerminalLayer* terminal_layer_create(GRect frame, uint8_t max_characters);
-void terminal_layer_output(TerminalLayer *terminal_layer, char* output);
+void terminal_layer_output(TerminalLayer *terminal_layer, const char *output);
 void terminal_layer_destroy(TerminalLayer *terminal_layer);
 Layer* terminal_layer_get_layer(TerminalLayer *terminal_layer);

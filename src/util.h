@@ -1,5 +1,6 @@
 #pragma once
 #include <pebble.h>
+#define UNUSED(x) (void)(x)
 
 typedef struct {
   bool valid;

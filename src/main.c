@@ -76,6 +76,7 @@ static SingleDayWeather phone_model_to_single_day(PhoneWeatherModel phone_model,
 }
 
 static void retry_request(void *data) {
+  UNUSED(data);
   Application *application = (Application *) data;
   terminal_layer_output(application->terminal_layer, "Retrying weather");
   send_request();
@@ -168,9 +169,9 @@ static void inbox_received_handler(DictionaryIterator *iterator, void *context) 
 }
 
 static void report_memory(void *data) {
-  char output[20];
-  snprintf(output, 20, "memusage [%d]", heap_bytes_used());
-  APP_LOG(APP_LOG_LEVEL_DEBUG, output);
+  UNUSED(data);
+
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "memusage [%d], memfree [%d]", (int) heap_bytes_used(), (int) heap_bytes_free());
   app_timer_register(5000, report_memory, NULL);
 }
 
@@ -189,7 +190,7 @@ static void main_load(Window* window) {
 }
 
 static void main_unload(Window* window) {
-
+  UNUSED(window);
 }
 
 void handle_init(Application *application) {

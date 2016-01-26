@@ -2,6 +2,8 @@
 static const Mode INITIAL_MODE = ICON;
 
 static void middle_click(ClickRecognizerRef recognizer, void *context) {
+  UNUSED(recognizer);
+
   ScrollingForecastLayer *scrolling_forecast_layer = (ScrollingForecastLayer *)context;
 
   scrolling_forecast_layer->mode = scrolling_forecast_layer->mode == ICON ? TEXT : ICON;
@@ -11,6 +13,8 @@ static void middle_click(ClickRecognizerRef recognizer, void *context) {
 }
 
 static void click_provider(ClickRecognizerRef recognizer) {
+  UNUSED(recognizer);
+  
   window_single_click_subscribe(BUTTON_ID_SELECT, middle_click);
 }
 
@@ -19,7 +23,7 @@ static ScrollLayer* create_scrolling_layer(GRect frame) {
 
   scroll_layer_set_paging(scrolling_layer, true);
   scroll_layer_set_content_size(scrolling_layer, GSize(frame.size.w, NUMBER_OF_DAYS * HEIGHT_OF_DAY));
-  scroll_layer_set_content_offset(scrolling_layer, GPoint(0, frame.size.h), true);
+  scroll_layer_set_content_offset(scrolling_layer, GPoint(0, frame.size.h), false);
 
   return scrolling_layer;
 }

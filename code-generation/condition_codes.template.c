@@ -32,8 +32,3 @@ uint8_t condition_code_to_text_size(uint8_t condition_code) {
 
   return 0;
 }
-/*
-uint8_t condition_code_to_string(uint8_t condition_code) {
-	// Not needed yet but likely
-}
-*/

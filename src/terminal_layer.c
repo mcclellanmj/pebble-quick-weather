@@ -37,7 +37,7 @@ static int count_characters(char* string, char* character) {
 }
 */
 
-void terminal_layer_output(TerminalLayer *terminal_layer, char *output) {
+void terminal_layer_output(TerminalLayer *terminal_layer, const char *output) {
   APP_LOG(APP_LOG_LEVEL_DEBUG, "adding [%s]", output);
 
   APP_LOG(APP_LOG_LEVEL_DEBUG, "current line count: [%d]", terminal_layer->num_lines);
