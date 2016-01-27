@@ -28,20 +28,33 @@ static ScrollLayer* create_scrolling_layer(GRect frame) {
   return scrolling_layer;
 }
 
+static const GPathInfo TRIANGLE_PATH_INFO = {
+  .num_points = 3,
+  .points = (GPoint []) {{0, -4}, {4, 4}, {-4, 4}}
+};
+static GPath *triangle_path = NULL;
+
 static void additional_drawing(struct Layer *layer, GContext *ctx)  {
-  graphics_context_set_fill_color(ctx, GColorLightGray);
+
+  if(triangle_path == NULL) {
+    triangle_path = gpath_create(&TRIANGLE_PATH_INFO);
+  }
+
+  graphics_context_set_fill_color(ctx, GColorWhite);
   graphics_fill_rect(ctx, GRect(140, (168/2) - 8, 15, 16), 2, GCornersAll);
 
   ScrollingForecastLayer *scrolling_forecast_layer = (ScrollingForecastLayer *) layer_get_data(layer);
 
   GPoint offset = scroll_layer_get_content_offset(scrolling_forecast_layer->scroll_layer);
 
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "Current offset = (%d,%d)", offset.x, offset.y);
-
   if(offset.y == 0) {
-    // draw up arrow
+    gpath_move_to(triangle_path, GPoint(138, 153));
+    gpath_rotate_to(triangle_path, DEG_TO_TRIGANGLE(180));
+    gpath_draw_filled(ctx, triangle_path);
   } else {
-    // draw down array
+    gpath_move_to(triangle_path, GPoint(138, 15));
+    gpath_rotate_to(triangle_path, DEG_TO_TRIGANGLE(0));
+    gpath_draw_filled(ctx, triangle_path);
   }
 }
 
