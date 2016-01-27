@@ -8,6 +8,7 @@ typedef struct {
 
 typedef struct {
   Layer *root_layer;
+  GPath *triangle_path;
   ScrollLayer *scroll_layer;
   SingleDayWeatherLayer *single_day_layers[NUMBER_OF_DAYS];
   Mode mode;

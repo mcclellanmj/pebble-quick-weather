@@ -1,6 +1,11 @@
 #include "scrolling_forecast_layer.h"
 static const Mode INITIAL_MODE = ICON;
 
+static const GPathInfo TRIANGLE_PATH_INFO = {
+  .num_points = 3,
+  .points = (GPoint []) {{0, -4}, {4, 4}, {-4, 4}}
+};
+
 static void middle_click(ClickRecognizerRef recognizer, void *context) {
   UNUSED(recognizer);
 
@@ -28,18 +33,7 @@ static ScrollLayer* create_scrolling_layer(GRect frame) {
   return scrolling_layer;
 }
 
-static const GPathInfo TRIANGLE_PATH_INFO = {
-  .num_points = 3,
-  .points = (GPoint []) {{0, -4}, {4, 4}, {-4, 4}}
-};
-static GPath *triangle_path = NULL;
-
 static void additional_drawing(struct Layer *layer, GContext *ctx)  {
-
-  if(triangle_path == NULL) {
-    triangle_path = gpath_create(&TRIANGLE_PATH_INFO);
-  }
-
   graphics_context_set_fill_color(ctx, GColorWhite);
   graphics_fill_rect(ctx, GRect(140, (168/2) - 8, 15, 16), 2, GCornersAll);
 
@@ -47,6 +41,7 @@ static void additional_drawing(struct Layer *layer, GContext *ctx)  {
 
   GPoint offset = scroll_layer_get_content_offset(scrolling_forecast_layer->scroll_layer);
 
+  GPath *triangle_path = scrolling_forecast_layer->triangle_path;
   if(offset.y == 0) {
     gpath_move_to(triangle_path, GPoint(138, 153));
     gpath_rotate_to(triangle_path, DEG_TO_TRIGANGLE(180));
@@ -90,6 +85,7 @@ ScrollingForecastLayer* scrolling_forecast_layer_create(GRect frame, Forecast fo
     );
 
     scrolling_forecast_layer->single_day_layers[i] = single_day_weather_layer;
+    scrolling_forecast_layer->triangle_path = gpath_create(&TRIANGLE_PATH_INFO);
     scroll_layer_add_child(scroll_layer, single_day_weather_layer_get_layer(single_day_weather_layer));
   }
 
@@ -111,6 +107,7 @@ void scrolling_forecast_layer_destroy(ScrollingForecastLayer *scrolling_forecast
     single_day_weather_layer_destroy(single_day_weather_layer);
   }
 
+  gpath_destroy(scrolling_forecast_layer->triangle_path);
   scroll_layer_destroy(scrolling_forecast_layer->scroll_layer);
   layer_destroy(scrolling_forecast_layer->root_layer);
 }
