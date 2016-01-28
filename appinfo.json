@@ -3,9 +3,9 @@
         "MESSAGE_TYPE": 0,
         "WEATHER_START" : 1,
         "WEATHER_FORECASTS" : 2,
-        "INITIAL_MODE" : 3,
-        "UNITS" : 4,
-        "SHOW_TODAY" : 5
+        "CONFIG_INITIAL_MODE" : 3,
+        "CONFIG_UNITS" : 4,
+        "CONFIG_SHOW_TODAY" : 5
     },
     "capabilities": [
         ""

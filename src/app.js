@@ -11,7 +11,8 @@ var Constants = {
     "WEATHER_REPORT" : 1,
     "FETCH_WEATHER" : 2,
     "WEATHER_FAILED" : 3,
-    "LOCATION_FAILED" : 4
+    "LOCATION_FAILED" : 4,
+    "CONFIGURATION" : 5
   },
   "LocationOptions" : {
     "enableHighAccuracy" : false, 
@@ -20,6 +21,9 @@ var Constants = {
   },
   "HTTP" : {
     "requestTimeout" : 30000
+  },
+  "Config" : {
+    "URL" : "http://www.google.com"
   },
   // LongToShortMap is generated using the generate_mapping_js.py file, not advised to manually edit this
   "LongToShortMap" : {"761": "45", "622": "38", "621": "37", "620": "36", "212": "5", "600": "29", "210": "3", "211": "4", "313": "16", "312": "15", "311": "14", "310": "13", "701": "39", "314": "17", "601": "30", "230": "7", "231": "8", "232": "9", "959": "69", "958": "68", "962": "72", "762": "46", "951": "61", "953": "63", "602": "31", "955": "65", "954": "64", "957": "67", "956": "66", "731": "42", "612": "33", "321": "18", "520": "25", "521": "26", "522": "27", "504": "23", "502": "21", "503": "22", "500": "19", "501": "20", "201": "1", "200": "0", "751": "44", "202": "2", "771": "47", "300": "10", "301": "11", "302": "12", "611": "32", "616": "35", "952": "62", "711": "40", "615": "34", "803": "52", "960": "70", "221": "6", "961": "71", "902": "56", "903": "57", "900": "54", "901": "55", "906": "60", "781": "48", "904": "58", "905": "59", "531": "28", "721": "41", "511": "24", "802": "51", "801": "50", "800": "49", "741": "43", "804": "53"}
@@ -280,6 +284,8 @@ Pebble.addEventListener('appmessage', function(e) {
 );
 
 Pebble.addEventListener("showConfiguration", function(e) {
+  console.log("Showing the configuration");
+
   var mode = localStorage.getItem("mode");
   var units = localStorage.getItem("units");
   var showToday = localStorage.getItem("showToday");
@@ -290,21 +296,22 @@ Pebble.addEventListener("showConfiguration", function(e) {
     "showToday" : showToday
   };
 
-  Pebble.openURL('http://www.google.com#' + encodeURIComponent(JSON.stringify(config));
+  Pebble.openURL(Constants.Config.URL + "#" + encodeURIComponent(JSON.stringify(config)));
 });
 
 Pebble.addEventListener("webviewclosed", function(e) {
-    var data = e.response;
+  console.log("Showing the configuration");
+  var data = e.response;
 
-    // localStorage.setItem("color", color);
+  // localStorage.setItem("color", color);
 
-    var mode = 0;
-    var units = 0;
-    var showToday = false;
-    Pebble.sendAppMessage({
-      "MESSAGE_TYPE": Constants.MessageTypes.CONFIGURATION,
-      "INITIAL_MODE" : ByteConversions.toInt8ByteArray(mode),
-      "UNITS" : ByteConversions.toInt8ByteArray(units),
-      "SHOW_TODAY" : showToday
-    });
+  var mode = 0;
+  var units = 0;
+  var showToday = false;
+  Pebble.sendAppMessage({
+    "MESSAGE_TYPE": Constants.MessageTypes.CONFIGURATION,
+    "CONFIG_INITIAL_MODE" : ByteConversions.toInt8ByteArray(mode),
+    "CONFIG_UNITS" : ByteConversions.toInt8ByteArray(units),
+    "CONFIG_SHOW_TODAY" : showToday
+  });
 });

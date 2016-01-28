@@ -15,7 +15,10 @@ typedef enum {
 enum {
   MESSAGE_TYPE = 0,
   WEATHER_START = 1,
-  WEATHER_FORECASTS = 2
+  WEATHER_FORECASTS = 2,
+  CONFIG_INITIAL_MODE = 3,
+  CONFIG_UNITS = 4,
+  CONFIG_SHOW_TODAY = 5
 };
 
 enum {
@@ -23,7 +26,8 @@ enum {
   WEATHER_REPORT = 1,
   FETCH_WEATHER = 2,
   WEATHER_FAILED = 3,
-  LOCATION_FAILED = 4
+  LOCATION_FAILED = 4,
+  CONFIGURATION = 5
 };
 
 typedef struct {
