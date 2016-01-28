@@ -278,3 +278,33 @@ Pebble.addEventListener('appmessage', function(e) {
     MessageHandler.handleMessage(msg);
   }
 );
+
+Pebble.addEventListener("showConfiguration", function(e) {
+  var mode = localStorage.getItem("mode");
+  var units = localStorage.getItem("units");
+  var showToday = localStorage.getItem("showToday");
+
+  var config = {
+    "mode" : mode,
+    "units" : units,
+    "showToday" : showToday
+  };
+
+  Pebble.openURL('http://www.google.com#' + encodeURIComponent(JSON.stringify(config));
+});
+
+Pebble.addEventListener("webviewclosed", function(e) {
+    var data = e.response;
+
+    // localStorage.setItem("color", color);
+
+    var mode = 0;
+    var units = 0;
+    var showToday = false;
+    Pebble.sendAppMessage({
+      "MESSAGE_TYPE": Constants.MessageTypes.CONFIGURATION,
+      "INITIAL_MODE" : ByteConversions.toInt8ByteArray(mode),
+      "UNITS" : ByteConversions.toInt8ByteArray(units),
+      "SHOW_TODAY" : showToday
+    });
+});
