@@ -176,7 +176,7 @@ static void report_memory(void *data) {
   UNUSED(data);
 
   APP_LOG(APP_LOG_LEVEL_DEBUG, "memusage [%d], memfree [%d]", (int) heap_bytes_used(), (int) heap_bytes_free());
-  app_timer_register(5000, report_memory, NULL);
+  //app_timer_register(5000, report_memory, NULL);
 }
 
 static void main_load(Window* window) {
@@ -223,9 +223,8 @@ void handle_init(Application *application) {
 void handle_deinit(Application *application) {
   if(application->scrolling_forecast_layer != NULL) {
     scrolling_forecast_layer_destroy(application->scrolling_forecast_layer);
-    terminal_layer_destroy(application->terminal_layer);
-    free(application->scrolling_forecast_layer);
   }
+  terminal_layer_destroy(application->terminal_layer);
   window_destroy(application->main_window);
 }
 

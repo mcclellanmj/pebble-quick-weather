@@ -300,7 +300,7 @@ Pebble.addEventListener("showConfiguration", function(e) {
 });
 
 Pebble.addEventListener("webviewclosed", function(e) {
-  console.log("Showing the configuration");
+  console.log("Showing the webview closed");
   var data = e.response;
 
   // localStorage.setItem("color", color);
