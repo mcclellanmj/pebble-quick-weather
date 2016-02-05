@@ -1,0 +1,22 @@
+{
+  "name": "pebble-quick-weather-page",
+  "homepage": "https://github.com/mcclellanmj/pebble-quick-weather",
+  "authors": [
+    "Matt McClellan <mcclellan.mj@gmail.com>"
+  ],
+  "description": "settings page for pebble watchface",
+  "main": "index.html",
+  "moduleType": [],
+  "license": "GPL",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "Slate": "pebble-slate#^0.0.3"
+  }
+}
