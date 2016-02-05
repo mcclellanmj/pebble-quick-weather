@@ -1,1 +1,65 @@
-My Page
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+  <link rel='stylesheet' type='text/css' href='/bower_components/Slate/dist/css/slate.min.css'>
+  <link rel='stylesheet' type='text/css' href='/css/style.css'>
+</head>
+<body>
+  <div class='item-container'>
+    <h1 class='title'>Quick Weather Configuration</h1>
+  </div>
+
+  <div class='item-container'>
+    <div class='item-container-content'>
+      <div class='item'>
+        This page will allow setting the temperature unit and initial view of the watchapp
+      </div>
+    </div>
+  </div>
+
+  <div class="item-container">
+    <div class="item-container-header">Temperature Unit</div>
+    <div class="item-container-content">
+      <label class="item">
+        Fahrenheit
+        <input type="radio" class="item-radio" name="unit" value="FAHRENHEIT">
+      </label>
+      <label class="item">
+        Celsius
+        <input type="radio" class="item-radio" name="unit" value="CELSIUS">
+      </label>
+    </div>
+  </div> 
+
+  <div class="item-container">
+    <div class="item-container-header">Initial Display</div>
+    <div class="item-container-content">
+      <label class="item">
+        Icons
+        <input type="radio" class="item-radio" name="initial-display" value="ICONS">
+      </label>
+      <label class="item">
+        Text
+        <input type="radio" class="item-radio" name="initial-display" value="TEXT">
+      </label>
+    </div>
+    <div class="item-container-footer">
+      <p>
+        Sets the view when the screen loads. If Text is selected you will see the text description of the weather.
+        If Icon is selected you'll see a small icon representing the weather.  Defaults to Icon
+      </p>
+    </div>
+  </div> 
+
+  <div class='item-container'>
+    <div class='button-container'>
+      <input id='submitButton' type='button' class='item-button' value='SUBMIT'>
+    </div>
+  </div>
+
+  <script src='/bower_components/Slate/dist/js/slate.min.js'></script>
+  <script src='/js/main.js'></script>
+</body>
+</html>
