@@ -38,17 +38,36 @@
     <div class="item-container-content">
       <label class="item">
         Icons
-        <input type="radio" class="item-radio" name="initial-display" value="ICONS">
+        <input type="radio" class="item-radio" name="initialDisplay" value="ICONS">
       </label>
       <label class="item">
         Text
-        <input type="radio" class="item-radio" name="initial-display" value="TEXT">
+        <input type="radio" class="item-radio" name="initialDisplay" value="TEXT">
       </label>
     </div>
     <div class="item-container-footer">
       <p>
         Sets the view when the screen loads. If Text is selected you will see the text description of the weather.
         If Icon is selected you'll see a small icon representing the weather.  Defaults to Icon
+      </p>
+    </div>
+  </div> 
+
+  <div class="item-container">
+    <div class="item-container-header">Show Current Day</div>
+    <div class="item-container-content">
+      <label class="item">
+        Yes
+        <input type="radio" class="item-radio" name="showCurrentDay" value="YES">
+      </label>
+      <label class="item">
+        No
+        <input type="radio" class="item-radio" name="showCurrentDay" value="NO">
+      </label>
+    </div>
+    <div class="item-container-footer">
+      <p>
+        If set to YES, the current day will show in the forecast.  That is the forecast will include today.
       </p>
     </div>
   </div> 
