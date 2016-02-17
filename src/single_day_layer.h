@@ -3,8 +3,8 @@
 #include "copying_text_layer.h"
 
 typedef enum {
-  TEXT,
-  ICON
+  ICON = 0,
+  TEXT = 1
 } Mode;
 
 typedef struct {

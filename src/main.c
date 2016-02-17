@@ -8,17 +8,15 @@
 #define SECONDS_PER_DAY 86400
 
 typedef enum {
-  CELSIUS, 
-  FAHRENHEIT
+  FAHRENHEIT = 0,
+  CELSIUS = 1
 } TemperatureUnit;
 
 enum {
   MESSAGE_TYPE = 0,
   WEATHER_START = 1,
   WEATHER_FORECASTS = 2,
-  CONFIG_INITIAL_MODE = 3,
-  CONFIG_UNITS = 4,
-  CONFIG_SHOW_TODAY = 5
+  CONFIGURATION = 3
 };
 
 enum {
@@ -27,8 +25,13 @@ enum {
   FETCH_WEATHER = 2,
   WEATHER_FAILED = 3,
   LOCATION_FAILED = 4,
-  CONFIGURATION = 5
+  CONFIGURATION_CHANGED = 5
 };
+
+typedef struct {
+  Mode initial_mode;
+  TemperatureUnit unit;
+} AppConfiguration;
 
 typedef struct {
   uint8_t forecast_code;
@@ -38,6 +41,7 @@ typedef struct {
 
 typedef struct {
   Window *main_window;
+  AppConfiguration configuration;
   ScrollingForecastLayer *scrolling_forecast_layer;
   TerminalLayer *terminal_layer;
 } Application;
@@ -110,6 +114,15 @@ static void inbox_received_handler(DictionaryIterator *iterator, void *context) 
   
   if(request_type == PHONE_READY) {
     terminal_layer_output(application->terminal_layer, "Phone Ready");
+
+    memcpy(&application->configuration, dict_find(iterator, CONFIGURATION)->value->data, sizeof(AppConfiguration));
+    APP_LOG(
+      APP_LOG_LEVEL_DEBUG, 
+      "INITIAL_MODE = [%d], UNIT = [%d]", 
+      application->configuration.initial_mode,
+      application->configuration.unit
+    );
+
     send_request();
     terminal_layer_output(application->terminal_layer, "Requested weather");
   }
@@ -150,9 +163,12 @@ static void inbox_received_handler(DictionaryIterator *iterator, void *context) 
       single_day_weather[i] = phone_model_to_single_day(
         phone_model, 
         start_time + (i * SECONDS_PER_DAY),
-        // Needs to be pulling from the application
-        FAHRENHEIT
+        application->configuration.unit
       );
+    }
+
+    if(request_type == CONFIGURATION) {
+      APP_LOG(APP_LOG_LEVEL_DEBUG, "Got the configuration message");
     }
 
     Forecast forecast;
