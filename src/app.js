@@ -22,6 +22,12 @@ var Constants = {
   "HTTP" : {
     "requestTimeout" : 30000
   },
+  "Analytics" : {
+    "key" : "%QUICK_WEATHER_GOOGLE_ANALYTICS_KEY%",
+    "URL" : "http://www.google-analytics.com/collect",
+    "appName" : "Pebble Quick Weather",
+    "appVersion" : "1.0.0"
+  },
   "Config" : {
     "URL" : "http://mcclellanmj.github.io/pebble-quick-weather/"
   },
@@ -112,6 +118,33 @@ var HTTPServices = (function() {
   
   return {
     'makeRequest' : self.makeRequest
+  };
+})();
+
+var Analytics = (function() {
+  var self = {};
+
+  self.track = function(action) {
+    var req = new XMLHttpRequest();
+    var queryParams = {
+      "v" : "1",
+      "tid" : Constants.Analytics.key,
+      "cid" : Pebble.getAccountToken(),
+      "t" : "event",
+      "an" : Constants.Analytics.appName,
+      "av" : Constants.Analytics.appVersion,
+      "ec" : "app",
+      "ea" : action
+    };
+
+    var url = Urls.generateUrl(Constants.Analytics.URL, queryParams);
+    console.log("Requesting analytics from [" + url + "]")
+
+    HTTPServices.makeRequest('POST', url, function() {console.log("success")}, function() {console.log("error")});
+  };
+
+  return {
+    'track' : self.track
   };
 })();
 
@@ -314,6 +347,7 @@ Pebble.addEventListener('ready', function() {
       "MESSAGE_TYPE" : Constants.MessageTypes.PHONE_READY,
       "CONFIGURATION" : Configuration.convertConfigurationToBytes(Configuration.loadConfiguration())
     });
+    Analytics.track("started");
     console.log('Phone ready message has been sent');
   }
 );

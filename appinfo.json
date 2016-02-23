@@ -6,10 +6,10 @@
         "CONFIGURATION" : 3
     },
     "capabilities": [
-        ""
+        "configurable"
     ],
     "companyName": "mcclellan.mj@gmail.com",
-    "longName": "instant-forecast",
+    "longName": "Express Forecast",
     "projectType": "native",
     "resources": {
         "media": [
@@ -157,7 +157,7 @@
         ]
     },
     "sdkVersion": "3",
-    "shortName": "instant-forecast",
+    "shortName": "Express Forecast",
     "targetPlatforms": [
         "aplite",
         "basalt"

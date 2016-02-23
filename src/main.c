@@ -115,6 +115,7 @@ static void inbox_received_handler(DictionaryIterator *iterator, void *context) 
   if(request_type == PHONE_READY) {
     terminal_layer_output(application->terminal_layer, "Phone Ready");
 
+    terminal_layer_output(application->terminal_layer, "Loading Configuration");
     memcpy(&application->configuration, dict_find(iterator, CONFIGURATION)->value->data, sizeof(AppConfiguration));
     APP_LOG(
       APP_LOG_LEVEL_DEBUG, 
@@ -189,13 +190,6 @@ static void inbox_received_handler(DictionaryIterator *iterator, void *context) 
   }
 }
 
-static void report_memory(void *data) {
-  UNUSED(data);
-
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "memusage [%d], memfree [%d]", (int) heap_bytes_used(), (int) heap_bytes_free());
-  //app_timer_register(5000, report_memory, NULL);
-}
-
 static void main_load(Window* window) {
   Application *application = (Application *) window_get_user_data(window);
   application->terminal_layer = terminal_layer_create(
@@ -203,7 +197,7 @@ static void main_load(Window* window) {
     255
   );
 
-  terminal_layer_output(application->terminal_layer, "Window loading");
+  terminal_layer_output(application->terminal_layer, "Starting application");
   layer_add_child(
     window_get_root_layer(application->main_window), 
     terminal_layer_get_layer(application->terminal_layer)
@@ -222,7 +216,6 @@ void handle_init(Application *application) {
     255
   );
 
-  app_timer_register(5000, report_memory, NULL);
   window_set_window_handlers(application->main_window, (WindowHandlers) {
     .load = main_load,
     .unload = main_unload

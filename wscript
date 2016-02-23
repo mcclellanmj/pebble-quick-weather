@@ -20,6 +20,7 @@ def replace_js_environment(task):
     with open(input) as infile, open(task.outputs[0].abspath(), 'w') as outfile:
         for line in infile:
             modified_line = line.replace('%OPEN_WEATHER_MAP_KEY%', os.environ['OPEN_WEATHER_MAP_KEY'])
+            modified_line = modified_line.replace('%QUICK_WEATHER_GOOGLE_ANALYTICS_KEY%', os.environ['QUICK_WEATHER_GOOGLE_ANALYTICS_KEY'])
             outfile.write(modified_line) 
 
 def options(ctx):
