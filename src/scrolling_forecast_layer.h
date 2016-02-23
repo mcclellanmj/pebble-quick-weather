@@ -14,7 +14,7 @@ typedef struct {
   Mode mode;
 } ScrollingForecastLayer;
 
-ScrollingForecastLayer* scrolling_forecast_layer_create(GRect frame, Forecast weather);
+ScrollingForecastLayer* scrolling_forecast_layer_create(GRect frame, Forecast weather, Mode initial_mode);
 void scrolling_forecast_layer_set_mode(ScrollingForecastLayer *scrolling_forecast_layer, Mode mode);
 void scrolling_forecast_layer_destroy(ScrollingForecastLayer *scrolling_forecast_layer);
 Layer* scrolling_forecast_layer_get_layer(ScrollingForecastLayer *scrolling_forecast_layer);

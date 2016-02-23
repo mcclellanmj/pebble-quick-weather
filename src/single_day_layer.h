@@ -25,7 +25,7 @@ typedef struct {
   GBitmap* bitmap;
 } SingleDayWeatherLayer;
 
-SingleDayWeatherLayer* single_day_weather_layer_create(GRect frame, SingleDayWeather weather);
+SingleDayWeatherLayer* single_day_weather_layer_create(GRect frame, SingleDayWeather weather, Mode initial_mode);
 void single_day_weather_layer_destroy(SingleDayWeatherLayer *single_day_weather_layer);
 Layer* single_day_weather_layer_get_layer(SingleDayWeatherLayer *single_day_weather_layer);
 void single_day_weather_layer_set_mode(SingleDayWeatherLayer *single_day_weather_layer, Mode mode);

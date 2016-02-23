@@ -22,7 +22,7 @@ static CopyingTextLayer* create_temperature_layer(GRect frame, int16_t high, int
   return copying_text_layer;
 }
 
-SingleDayWeatherLayer* single_day_weather_layer_create(GRect frame, SingleDayWeather weather) {
+SingleDayWeatherLayer* single_day_weather_layer_create(GRect frame, SingleDayWeather weather, Mode initial_mode) {
   Layer *root_layer = layer_create_with_data(frame, sizeof(SingleDayWeatherLayer));
 
   SingleDayWeatherLayer *single_day_weather_layer = (SingleDayWeatherLayer *) layer_get_data(root_layer);
@@ -64,7 +64,7 @@ SingleDayWeatherLayer* single_day_weather_layer_create(GRect frame, SingleDayWea
   layer_add_child(root_layer, copying_text_layer_get_layer(single_day_weather_layer->description_layer));
   layer_add_child(root_layer, bitmap_layer_get_layer(single_day_weather_layer->icon_layer));
 
-  single_day_weather_layer_set_mode(single_day_weather_layer, ICON);
+  single_day_weather_layer_set_mode(single_day_weather_layer, initial_mode);
 
   return single_day_weather_layer;
 }

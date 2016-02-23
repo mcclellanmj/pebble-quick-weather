@@ -176,7 +176,8 @@ static void inbox_received_handler(DictionaryIterator *iterator, void *context) 
 
     ScrollingForecastLayer *scrolling_forecast_layer = scrolling_forecast_layer_create(
       GRect(0, 0, 144, 168),
-      forecast
+      forecast,
+      application->configuration.initial_mode
     );
 
     scrolling_forecast_layer_set_click_on_window(scrolling_forecast_layer, application->main_window);

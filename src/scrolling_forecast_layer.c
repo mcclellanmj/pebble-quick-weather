@@ -1,4 +1,6 @@
 #include "scrolling_forecast_layer.h"
+#include "single_day_layer.h"
+
 static const Mode INITIAL_MODE = ICON;
 
 static const GPathInfo TRIANGLE_PATH_INFO = {
@@ -65,7 +67,7 @@ void scrolling_forecast_layer_set_click_on_window(ScrollingForecastLayer *scroll
   scroll_layer_set_click_config_onto_window(scrolling_forecast_layer->scroll_layer, window);
 }
 
-ScrollingForecastLayer* scrolling_forecast_layer_create(GRect frame, Forecast forecast) {
+ScrollingForecastLayer* scrolling_forecast_layer_create(GRect frame, Forecast forecast, Mode initial_mode) {
   Layer *root_layer = layer_create_with_data(frame, sizeof(ScrollingForecastLayer));
   layer_set_update_proc(root_layer, additional_drawing);
 
@@ -81,7 +83,8 @@ ScrollingForecastLayer* scrolling_forecast_layer_create(GRect frame, Forecast fo
     SingleDayWeatherLayer *single_day_weather_layer = scrolling_forecast_layer->single_day_layers[i];
     single_day_weather_layer = single_day_weather_layer_create(
       GRect(0, i * HEIGHT_OF_DAY, 144, HEIGHT_OF_DAY), 
-      day
+      day,
+      initial_mode
     );
 
     scrolling_forecast_layer->single_day_layers[i] = single_day_weather_layer;

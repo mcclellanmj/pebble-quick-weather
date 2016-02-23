@@ -29,7 +29,6 @@ var Constants = {
   "LongToShortMap" : {"761": "45", "622": "38", "621": "37", "620": "36", "212": "5", "600": "29", "210": "3", "211": "4", "313": "16", "312": "15", "311": "14", "310": "13", "701": "39", "314": "17", "601": "30", "230": "7", "231": "8", "232": "9", "959": "69", "958": "68", "962": "72", "762": "46", "951": "61", "953": "63", "602": "31", "955": "65", "954": "64", "957": "67", "956": "66", "731": "42", "612": "33", "321": "18", "520": "25", "521": "26", "522": "27", "504": "23", "502": "21", "503": "22", "500": "19", "501": "20", "201": "1", "200": "0", "751": "44", "202": "2", "771": "47", "300": "10", "301": "11", "302": "12", "611": "32", "616": "35", "952": "62", "711": "40", "615": "34", "803": "52", "960": "70", "221": "6", "961": "71", "902": "56", "903": "57", "900": "54", "901": "55", "906": "60", "781": "48", "904": "58", "905": "59", "531": "28", "721": "41", "511": "24", "802": "51", "801": "50", "800": "49", "741": "43", "804": "53"}
 };
 
-
 var ArrayUtils = (function() {
   var self = {};
   
@@ -85,7 +84,7 @@ var HTTPServices = (function() {
   var self = {};
   
   self.makeRequest = function(method, url, callback, errCallback) {
-  	var req = new XMLHttpRequest();
+    var req = new XMLHttpRequest();
     
     req.onerror = errCallback;
     req.onreadystatechange = function(e) {
@@ -150,6 +149,35 @@ var ByteConversions = (function() {
   };
 })();
 
+var Configuration = (function() {
+  var self = {};
+
+  self.convertConfigurationToBytes = function(phoneModel) {
+    var initialDisplay = phoneModel.initialDisplay === "TEXT" ? 1 : 0;
+    var unit = phoneModel.unit === "CELSIUS" ? 1 : 0;
+
+    var result = [].concat.apply([], [initialDisplay, unit].map(ByteConversions.toInt8ByteArray));
+    return result;
+  };
+
+  self.loadConfiguration = function() {
+    var initialDisplay = localStorage.getItem("initialDisplay");
+    var unit = localStorage.getItem("unit");
+    var showCurrentDay = localStorage.getItem("showCurrentDay");
+
+    return {
+      "unit" : unit,
+      "initialDisplay" : initialDisplay,
+      "showCurrentDay" : showCurrentDay
+    };
+  };
+
+  return {
+    "convertConfigurationToBytes" : self.convertConfigurationToBytes,
+    "loadConfiguration" : self.loadConfiguration
+  };
+})();
+
 var Weather = (function() {
   var self = this;
   
@@ -199,10 +227,20 @@ var Weather = (function() {
     };
   };
 
+  self.getFirstDay = function(showCurrentDay, responseList) {
+    console.log("Show Today = [" + showCurrentDay + "]");
+    if(showCurrentDay === "YES") {
+      return responseList;
+    } else {
+      return responseList.slice(1);
+    }
+  }
+
   self.weatherSuccess = function(weather) {
     var response = JSON.parse(weather.response);
+    var configuration = Configuration.loadConfiguration();
     
-    var list = response.list.slice(1);
+    var list = self.getFirstDay(configuration.showCurrentDay, response.list);
 
     var highs = list.map(function(x) {return x.temp.max;});
     var lows = list.map(function(x) {return x.temp.min;});
@@ -269,31 +307,12 @@ var MessageHandler = (function() {
   };
 })();
 
-function convertConfigurationToBytes(phoneModel) {
-  var initialDisplay = phoneModel.initialDisplay === "TEXT" ? 1 : 0;
-  var unit = phoneModel.unit === "CELSIUS" ? 1 : 0;
-
-  var result = [].concat.apply([], [initialDisplay, unit].map(ByteConversions.toInt8ByteArray));
-  return result;
-}
-
-function loadConfiguration() {
-  var initialDisplay = localStorage.getItem("initialDisplay");
-  var unit = localStorage.getItem("unit");
-  var showToday = localStorage.getItem("showToday");
-
-  return {
-    "unit" : unit,
-    "initialDisplay" : initialDisplay,
-    "showToday" : showToday
-  };
-}
 
 Pebble.addEventListener('ready', function() {
     console.log('JavaScript app ready and running');
     Pebble.sendAppMessage({
       "MESSAGE_TYPE" : Constants.MessageTypes.PHONE_READY,
-      "CONFIGURATION" : convertConfigurationToBytes(loadConfiguration())
+      "CONFIGURATION" : Configuration.convertConfigurationToBytes(Configuration.loadConfiguration())
     });
     console.log('Phone ready message has been sent');
   }
@@ -309,8 +328,7 @@ Pebble.addEventListener('appmessage', function(e) {
 Pebble.addEventListener("showConfiguration", function(e) {
   console.log("Showing the configuration");
 
-  var config = loadConfiguration();
-
+  var config = Configuration.loadConfiguration();
   Pebble.openURL(Constants.Config.URL + "#" + encodeURIComponent(JSON.stringify(config)));
 });
 
@@ -320,10 +338,10 @@ Pebble.addEventListener("webviewclosed", function(e) {
 
   localStorage.setItem("initialDisplay", configData.initialDisplay);
   localStorage.setItem("unit", configData.unit);
-  localStorage.setItem("showToday", configData.showToday);
+  localStorage.setItem("showCurrentDay", configData.showCurrentDay);
 
   Pebble.sendAppMessage({
     "MESSAGE_TYPE": Constants.MessageTypes.CONFIGURATION,
-    "CONFIGURATION" : convertConfigurationToBytes(configData),
+    "CONFIGURATION" : Configuration.convertConfigurationToBytes(configData),
   });
 });
