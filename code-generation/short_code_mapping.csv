@@ -1,0 +1,81 @@
+short code,icon code,description
+0,19,t-storm w/ light rain
+1,20,t-storm w/ rain
+2,20,t-storm w/ heavy rain
+3,19,light t-storm
+4,20,t-storm
+5,20,heavy t-storm
+6,20,ragged t-storm
+7,19,t-storm w/ light drizzle
+8,20,t-storm w/ drizzle
+9,20,t-storm w/ heavy drizzle
+10,10,light drizzle
+11,10,drizzle
+12,11,heavy drizzle
+13,10,light drizzle rain
+14,10,drizzle rain
+15,11,heavy drizzle rain
+16,10,shower rain and drizzle
+17,11,heavy shower rain and drizzle
+18,10,shower drizzle
+19,10,light rain
+20,10,moderate rain
+21,11,heavy rain
+22,11,very heavy rain
+23,11,extreme rain
+24,13,freezing rain
+25,10,light shower rain
+26,10,shower rain
+27,11,heavy shower rain
+28,11,ragged shower rain
+29,15,light snow
+30,16,snow
+31,16,heavy snow
+32,13,sleet
+33,13,shower sleet
+34,18,light rain and snow
+35,18,rain and snow
+36,18,light shower snow
+37,18,shower snow
+38,18,heavy shower snow
+39,9,mist
+40,9,smoke
+41,9,haze
+42,8,"sand, dust whirls"
+43,9,fog
+44,8,sand
+45,8,dust
+46,8,volcanic ash
+47,11,squalls
+48,20,tornado
+49,0,clear sky
+50,1,few clouds
+51,2,scattered clouds
+52,3,broken clouds
+53,4,overcast clouds
+54,20,tornado
+55,20,tropical storm
+56,20,hurricane
+57,21,cold
+58,22,hot
+59,8,windy
+60,13,hail
+61,0,calm
+62,8,light breeze
+63,8,gentle breeze
+64,8,moderate breeze
+65,8,fresh breeze
+66,8,strong breeze
+67,8,"high wind, near gale"
+68,8,gale
+69,8,severe gale
+70,20,storm
+71,20,violent storm
+72,20,hurricane
+73,15,chance flurries
+74,10,chance rain
+75,12,chance sleet
+76,15,chance snow
+77,19,chance t-storms
+78,11,rain
+79,24,unknown

@@ -3,7 +3,7 @@ import csv
 def to_c_array_text(python_list):
   return "{" + ",".join(python_list) + "}"
 
-with open('condition_codes.csv', 'r') as codes_file, open('condition_codes.template.c', 'r') as template_file, open('condition_codes.c', 'w') as output_file:
+with open('short_code_mapping.csv', 'r') as codes_file, open('condition_codes.template.c', 'r') as template_file, open('condition_codes.c', 'w') as output_file:
     condition_codes_csv = csv.DictReader(codes_file)
     csv_extraction = [(row["icon code"], row["description"]) for row in condition_codes_csv]
     icon_codes = ["RESOURCE_ID_WEATHER_ICON_" + icon_code for (icon_code, _) in csv_extraction]

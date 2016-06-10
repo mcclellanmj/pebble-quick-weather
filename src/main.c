@@ -5,8 +5,6 @@
 #include "terminal_layer.h"
 #include "util.h"
 
-#define SECONDS_PER_DAY 86400
-
 typedef enum {
   FAHRENHEIT = 0,
   CELSIUS = 1
