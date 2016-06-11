@@ -37,7 +37,7 @@
     });
 
     textInputs.forEach(function(x) {
-      var element = $("input[name='" + name + "']");
+      var element = $("input[name='" + x + "']");
       if(localStorage[x] !== undefined) {
         element.val(localStorage[x]);
       } else {
