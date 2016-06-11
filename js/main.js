@@ -1,5 +1,6 @@
 (function() {
   var radios = ['unit', 'initialDisplay', 'showCurrentDay'];
+  var textInputs = ['weatherUndergroundKey'];
 
   function submitHandler() {
     var submitButton = $('#submitButton');
@@ -21,7 +22,8 @@
     var defaults = {
       'unit' : 'FAHRENHEIT', 
       'initialDisplay' : 'ICONS',
-      'showCurrentDay' : 'NO'
+      'showCurrentDay' : 'NO',
+      'weatherUndergroundKey' : ''
     };
 
     radios.forEach(function(x) {
@@ -33,14 +35,28 @@
         setRadioValue(x, defaults[x]);
       }
     });
+
+    textInputs.forEach(function(x) {
+      var element = $("input[name='" + name + "']");
+      if(localStorage[x] !== undefined) {
+        element.val(localStorage[x]);
+      } else {
+        element.val(defaults[x]);
+      }
+    });
   }
 
   function getAndStoreConfigData() {
-    var radios = ['unit', 'initialDisplay', 'showCurrentDay'];
     var options = {};
 
     radios.forEach(function(x) {
       var value = $("input[name='" + x + "']:checked").val()
+      options[x] = value;
+      localStorage[x] = value;
+    });
+
+    textInputs.forEach(function(x) {
+      var value = $("input[name='" + x + "']").val()
       options[x] = value;
       localStorage[x] = value;
     });
