@@ -36,7 +36,7 @@ var Constants = {
   },
   // LongToShortMap is generated using the generate_mapping_js.py file, not advised to manually edit this
   "OpenWeatherLongToShortMap": {"761": "45", "622": "38", "621": "37", "620": "36", "212": "5", "600": "29", "210": "3", "211": "4", "313": "16", "312": "15", "311": "14", "310": "13", "701": "39", "314": "17", "601": "30", "230": "7", "231": "8", "232": "9", "959": "69", "958": "68", "962": "72", "762": "46", "951": "61", "953": "63", "602": "31", "955": "65", "954": "64", "957": "67", "956": "66", "731": "42", "612": "33", "321": "18", "520": "25", "521": "26", "522": "27", "504": "23", "502": "21", "503": "22", "500": "19", "501": "20", "201": "1", "200": "0", "751": "44", "202": "2", "771": "47", "300": "10", "301": "11", "302": "12", "611": "32", "616": "35", "952": "62", "711": "40", "615": "34", "803": "52", "960": "70", "221": "6", "961": "71", "902": "56", "903": "57", "900": "54", "901": "55", "906": "60", "781": "48", "904": "58", "905": "59", "531": "28", "721": "41", "511": "24", "802": "51", "801": "50", "800": "49", "741": "43", "804": "53"},
-  "WeatherUndergroundLongToShortMap": {"flurries": "29", "chanceflurries": "73", "mostlycloudy": "52", "partlycloudy": "51", "partlysunny": "51", "snow": "30", "clear": "49", "sunny": "49", "mostlysunny": "50", "cloudy": "53", "chancesnow": "76", "sleet": "32", "tstorms": "4", "fog": "43", "hazy": "41", "unknown": "24", "rain": "78", "chancesleet": "75", "chancerain": "74", "chancetstorms": "77"
+  "WeatherUndergroundLongToShortMap": {"flurries": "29", "chanceflurries": "73", "mostlycloudy": "52", "partlycloudy": "51", "partlysunny": "51", "snow": "30", "clear": "49", "sunny": "49", "mostlysunny": "50", "cloudy": "53", "chancesnow": "76", "sleet": "32", "tstorms": "4", "fog": "43", "hazy": "41", "unknown": "24", "rain": "78", "chancesleet": "75", "chancerain": "74", "chancetstorms": "77"}
 };
 
 var ArrayUtils = (function() {
@@ -75,6 +75,18 @@ var KeyValueFunctions = (function() {
   
   return {
     'join' : self.join
+  };
+})();
+
+var Debug = (function() {
+  var self = {};
+
+  self.printArray = function(array) {
+    console.log(array.join(','));
+  };
+
+  return {
+    'printArray' : self.printArray
   };
 })();
 
@@ -207,7 +219,7 @@ var Configuration = (function() {
       "unit" : unit,
       "initialDisplay" : initialDisplay,
       "showCurrentDay" : showCurrentDay,
-      "weatherUndergroundKey": weatherUndergroundKey === undefined ? "" : weatherUndergroundKey
+      "weatherUndergroundKey": weatherUndergroundKey === null ? "" : weatherUndergroundKey
     };
   };
 
@@ -218,14 +230,14 @@ var Configuration = (function() {
 })();
 
 var WeatherUnderground = (function() {
-  var self = this;
+  var self = {};
 
   self.buildRetrieve = function(apiKey) {
     console.log("Building the retrieve function " + apiKey);
 
     return function(gpsLocation) {
-      WeatherUnderground.retrieve(apiKey, gpsLocation);
-    };
+      self.retrieve(apiKey, gpsLocation);
+    }.bind(this);
   };
 
   self.generateUrl = function(apiKey, gpsLocation) {
@@ -244,14 +256,61 @@ var WeatherUnderground = (function() {
     HTTPServices.makeRequest("GET", url, self.weatherSuccess, self.weatherFailed);
   };
 
+  self.smallId = function(condition) {
+    if(!Constants.WeatherUndergroundLongToShortMap.hasOwnProperty(condition)) {
+      var message = "The forecast code [" + condition + "] had no mapping in our forecast mappings";
+      console.log(message);
+      throw message;
+    }
+
+    var smallId = Constants.WeatherUndergroundLongToShortMap[condition];
+    return smallId;
+  };
+
+  self.createPebbleModel = function(forecast) {
+    var highs = forecast.map(function(x) {return parseInt(x.high.celsius)});
+    Debug.printArray(highs);
+    var lows = forecast.map(function(x) {return parseInt(x.low.celsius)});
+    Debug.printArray(lows);
+    var conditions = forecast.map(function(x) {return x.icon});
+    Debug.printArray(conditions);
+
+    var highBytes = [].concat.apply([], highs.map(ByteConversions.toInt8ByteArray));
+    var lowBytes = [].concat.apply([], lows.map(ByteConversions.toInt8ByteArray));
+    var forecastIds = [].concat.apply([], conditions.map(function(x) { return ByteConversions.toInt8ByteArray(self.smallId(x));}));
+    var weatherStructs = ArrayUtils.sequence([forecastIds, highBytes, lowBytes]);
+
+    var forecastStart = parseInt(forecast[0].date.epoch);
+
+    return {
+      "MESSAGE_TYPE" : ByteConversions.toInt8ByteArray(Constants.MessageTypes.WEATHER_REPORT),
+      "WEATHER_START" : ByteConversions.toInt32ByteArray(forecastStart),
+      "WEATHER_FORECASTS" : weatherStructs
+    };
+  };
+
+  self.weatherSuccess = function(data) {
+    var response = JSON.parse(data.response);
+    var forecasts = response.forecast.simpleforecast.forecastday;
+    var pebbleModel = self.createPebbleModel(forecasts);
+
+    Pebble.sendAppMessage(pebbleModel);
+  };
+
+  self.weatherFailed = function(error) {
+    console.log(error);
+    Pebble.sendAppMessage({
+      "MESSAGE_TYPE" : ByteConversions.toInt8ByteArray(Constants.MessageTypes.WEATHER_FAILED)
+    });
+  };
+
   return {
-    "retrieve" : self.retrieve,
     "buildRetrieve" : self.buildRetrieve
   };
 })();
 
 var OpenWeatherMap = (function() {
-  var self = this;
+  var self = {};
   
   self.buildQueryParamsMap = function(gpsLocation) {
     return {
@@ -265,13 +324,13 @@ var OpenWeatherMap = (function() {
   };
   
   self.smallId = function(bigId) {
-    if(!Constants.LongToShortMap.hasOwnProperty(bigId)) {
+    if(!Constants.OpenWeatherLongToShortMap.hasOwnProperty(bigId)) {
       var message = "The forecast code [" + bigId + "] had no mapping in our forecast mappings";
       console.log(message);
       throw message;
     }
 
-    var smallId = Constants.LongToShortMap[bigId];
+    var smallId = Constants.OpenWeatherLongToShortMap[bigId];
     return smallId;
   };
 
